@@ -1,0 +1,9 @@
+mongodb:
+  database: "feedback"
+  port: 27017
+  uri: "mongodb://localhost:27017"
+
+grpcport: "9090"
+server: "localhost:9090"
+
+

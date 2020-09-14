@@ -1,0 +1,119 @@
+syntax = "proto3";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package="v1/feedbackreqpb";
+
+message Feedback {
+    //For api versioning
+    string id = 1;
+    string candidate_name = 2;
+    string recruiter_name = 3;
+    //Full-Stack, Java, Dev-ops, UI-developer etc
+    string job_type = 5;
+    bool is_proxy = 6;
+    bool is_coding_required = 7;
+    bool is_whiteboarding_required = 8;
+    bool is_id_required = 9;
+    bool is_code_compiled = 10;
+    bool is_able_to_write_pseudoCode = 11;
+    bool is_whiteboard_done = 12;
+    bool is_algo_efficient = 13;
+    repeated TechSkill tech_skills = 14;
+    string my_comments = 15;
+    google.protobuf.Timestamp creatDate = 16;
+    google.protobuf.Timestamp updateDate = 17;
+    bool is_whiteboard_question_asked = 18;
+    bool whiteboard_explained = 19;
+    bool whiteboard_partial = 20;
+    string any_whiteboard_comment = 21;
+    string any_coding_comment = 22;
+    bool followed_coding_standards = 23;
+
+}
+
+message TechSkill {
+    string skill_name = 1;
+    int32 skill_rating = 2;
+    int32 experience_rating = 3;
+    repeated Topic topics = 4;
+    bool is_hands_on = 5;
+    bool in_depth_understanding = 6;
+    //comma seprated topics/questions asked
+    string  questions_asked = 7;
+}
+
+message Topic {
+    string topic_name = 1;
+    bool is_scenario_covered = 2;
+    string what_sceanrio_question = 3;
+    bool is_able_to_explain_scenario = 4;
+    bool is_able_to_exaplain = 5;
+    bool in_depth_understanding = 6;
+    bool partially_explained = 7;
+    bool is_hands_on = 8;
+    bool have_theroretical_knowledge = 9;
+    // comma seprated topics/questions asked
+    string theory_question = 10;
+}
+message FeedbackRequest{
+    string api = 1;
+    Feedback feedback_req = 2;
+}
+message FeedbackResponse {
+    string api = 1;
+    int32 status_code = 2;
+    //unique request id for created request
+    Feedback feedback_res = 3;
+    string request_id = 4;
+    string message = 5;
+}
+message ReadFeedbackRequest {
+    string api = 1;
+    string request_id = 2;
+}
+
+message DeleteFeedbackRequest {
+    string api = 1;
+    string request_id = 2;
+}
+message DeleteFeedbackResponse {
+    string api = 1;
+    int32 status_code = 2;
+}
+message GenerateFeedbackRequest{
+    string api = 1;
+    Feedback feedback_req = 2;
+    string summary_note = 3;
+}
+
+message GeneratedFeedbackResponse {
+    string api = 1;
+    repeated SkillFeedback skill_feedback = 2;
+    int32 status_code = 3;
+    string message = 4;
+    string summary_text = 5;
+}
+
+message SkillFeedback{
+    string feedback_text = 1;
+    string skill = 2;
+}
+
+message SimpleRequest {
+    string api = 1;
+    string req_text = 2;
+}
+message SimpleResponse {
+    string api = 1;
+    string feedback_res = 2;
+}
+
+service FeedbackService {
+    rpc Create(FeedbackRequest) returns (FeedbackResponse);
+    rpc Read(ReadFeedbackRequest) returns (FeedbackResponse);
+    rpc GenerateFeedbackForRequest(GenerateFeedbackRequest) returns (GeneratedFeedbackResponse);
+    rpc Delete(DeleteFeedbackRequest) returns (DeleteFeedbackResponse);
+}
+
