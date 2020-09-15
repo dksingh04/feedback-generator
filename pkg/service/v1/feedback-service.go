@@ -169,97 +169,11 @@ func (fs *feedbackServiceServer) GenerateFeedbackForRequest(ctx context.Context,
 	if fRes.IsProxy {
 		summaryText += fmt.Sprintf("%s %s %s", candidate, was, feedbackMapping["Proxy"])
 	} else {
-		// Build feedback when coding is required.
-		// TODO refactored and move it into separate methods
-		if fRes.IsCodingRequired {
-			if fRes.IsCodeCompiled && fRes.IsAlgoEfficient {
-				summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["AlgoEfficient"])
-			} else if fRes.IsCodeCompiled && !fRes.IsAlgoEfficient {
-				summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["NotEfficient"])
-			} else {
-				if fRes.IsAbleToWritePseudoCode && fRes.IsAlgoEfficient {
-					summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, was, feedbackMapping["PseudoCode"], feedbackMapping["AlgoEfficient"])
-				} else if fRes.IsAbleToWritePseudoCode && !fRes.IsAlgoEfficient {
-					summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["PseudoCode"], feedbackMapping["NotEfficient"])
-				}
-			}
-
-			if fRes.FollowedCodingStandards {
-				summaryText += fmt.Sprintf("%s %s %s.\n", candidate, was, feedbackMapping["Coding_Standards"])
-			}
-			if fRes.AnyCodingComment != "" {
-				summaryText += fmt.Sprintf("%s.\n", fRes.AnyCodingComment)
-			}
-
-		}
-		// Build feedback when Whiteboarding is required
-		// TODO refactored and move it into separate methods
-		if fRes.IsWhiteboardingRequired && fRes.IsWhiteboardQuestionAsked {
-			if fRes.WhiteboardExplained {
-				summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_explained"])
-			} else if fRes.WhiteboardPartial {
-				summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_explained"])
-			} else {
-				summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_not_explained"])
-			}
-		}
-
-		if fRes.MyComments != "" {
-			summaryText += fmt.Sprintf("%s\n", fRes.MyComments)
-		}
-
+		//generate summaryText
+		summaryText = generateSummaryText(summaryText, &fRes)
 		// Build skill feedback
-		// TODO refactored and move it into separate methods
-		var sFeedbackSlice = []*v1.SkillFeedback{}
-		for _, tech := range fRes.TechSkills {
-			fmt.Println(tech.SkillName)
-			if fRes.IsProxy {
-				sFeedbackSlice = append(sFeedbackSlice, &v1.SkillFeedback{
-					Skill:        tech.SkillName,
-					FeedbackText: fmt.Sprintf("%s %s %s.\n", candidate, was, feedbackMapping["Proxy"]),
-				})
-			} else {
-				sFeedback := &v1.SkillFeedback{
-					Skill:        tech.SkillName,
-					FeedbackText: fmt.Sprintf("%s. %s.\n", feedbackMapping["s-"+strconv.FormatInt(int64(tech.SkillRating), 10)], feedbackMapping["e-"+strconv.FormatInt(int64(tech.ExperienceRating), 10)]),
-				}
-				sFeedbackSlice = append(sFeedbackSlice, sFeedback)
-				sFeedback.FeedbackText += fmt.Sprintf("\n%s\n", topicsCovered)
-				//Build topics feedback
-				for _, topic := range tech.Topics {
-					sFeedback.FeedbackText += fmt.Sprintf("\n%s:\n", topic.TopicName)
-					if topic.IsAbleToExaplain {
-						sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s.\n", candidate, was, fmt.Sprintf(feedbackMapping["AbleToExplain"], topic.TopicName))
-					} else if topic.PartiallyExplained {
-						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, was, feedbackMapping["PartiallyExplained"])
-					}
-					if topic.IsScenarioCovered {
-						if topic.IsAbleToExplainScenario {
-							sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["ScenarioExplained"], topic.WhatSceanrioQuestion))
-						} else {
-							sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["ScenarioNotExplained"], topic.WhatSceanrioQuestion))
-						}
-					}
-					if topic.InDepthUnderstanding {
-						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s. \n", candidate, has, fmt.Sprintf(feedbackMapping["InDepthUnderstanding"], topic.TheoryQuestion))
-					}
+		sFeedbackSlice := generateSkillFeedback(&fRes)
 
-					if topic.IsHandsOn {
-						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, is, fmt.Sprintf(feedbackMapping["Hands-On-Topic"], topic.TopicName))
-					}
-				}
-
-				if tech.InDepthUnderstanding {
-					//fmt.Println(tech.QuestionsAsked)
-					sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s. \n", candidate, has, fmt.Sprintf(feedbackMapping["InDepthUnderstanding"], tech.QuestionsAsked))
-				}
-
-				if tech.IsHandsOn {
-					sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s.\n", candidate, is, feedbackMapping["Hands-On"])
-				}
-
-			}
-		}
 		gfRes.SkillFeedback = sFeedbackSlice
 	}
 
@@ -288,4 +202,96 @@ func (fs *feedbackServiceServer) Delete(ctx context.Context, req *v1.DeleteFeedb
 	}
 
 	return fRes, nil
+}
+
+func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
+	// Build feedback when coding is required.
+	if fRes.IsCodingRequired {
+		if fRes.IsCodeCompiled && fRes.IsAlgoEfficient {
+			summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["AlgoEfficient"])
+		} else if fRes.IsCodeCompiled && !fRes.IsAlgoEfficient {
+			summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["NotEfficient"])
+		} else {
+			if fRes.IsAbleToWritePseudoCode && fRes.IsAlgoEfficient {
+				summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, was, feedbackMapping["PseudoCode"], feedbackMapping["AlgoEfficient"])
+			} else if fRes.IsAbleToWritePseudoCode && !fRes.IsAlgoEfficient {
+				summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["PseudoCode"], feedbackMapping["NotEfficient"])
+			}
+		}
+
+		if fRes.FollowedCodingStandards {
+			summaryText += fmt.Sprintf("%s %s %s.\n", candidate, was, feedbackMapping["Coding_Standards"])
+		}
+		if fRes.AnyCodingComment != "" {
+			summaryText += fmt.Sprintf("%s.\n", fRes.AnyCodingComment)
+		}
+
+	}
+	// Build feedback when Whiteboarding is required
+	if fRes.IsWhiteboardingRequired && fRes.IsWhiteboardQuestionAsked {
+		if fRes.WhiteboardExplained {
+			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_explained"])
+		} else if fRes.WhiteboardPartial {
+			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_explained"])
+		} else {
+			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_not_explained"])
+		}
+	}
+
+	if fRes.MyComments != "" {
+		summaryText += fmt.Sprintf("%s\n", fRes.MyComments)
+	}
+	return summaryText
+}
+
+func generateSkillFeedback(fRes *v1.Feedback) []*v1.SkillFeedback {
+	var sFeedbackSlice = []*v1.SkillFeedback{}
+	for _, tech := range fRes.TechSkills {
+		if fRes.IsProxy {
+			sFeedbackSlice = append(sFeedbackSlice, &v1.SkillFeedback{
+				Skill:        tech.SkillName,
+				FeedbackText: fmt.Sprintf("%s %s %s.\n", candidate, was, feedbackMapping["Proxy"]),
+			})
+		} else {
+			sFeedback := &v1.SkillFeedback{
+				Skill:        tech.SkillName,
+				FeedbackText: fmt.Sprintf("%s. %s.\n", feedbackMapping["s-"+strconv.FormatInt(int64(tech.SkillRating), 10)], feedbackMapping["e-"+strconv.FormatInt(int64(tech.ExperienceRating), 10)]),
+			}
+			sFeedbackSlice = append(sFeedbackSlice, sFeedback)
+			sFeedback.FeedbackText += fmt.Sprintf("\n%s\n", topicsCovered)
+			//Build topics feedback
+			for _, topic := range tech.Topics {
+				sFeedback.FeedbackText += fmt.Sprintf("\n%s:\n", topic.TopicName)
+				if topic.IsAbleToExaplain {
+					sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s.\n", candidate, was, fmt.Sprintf(feedbackMapping["AbleToExplain"], topic.TopicName))
+				} else if topic.PartiallyExplained {
+					sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, was, feedbackMapping["PartiallyExplained"])
+				}
+				if topic.IsScenarioCovered {
+					if topic.IsAbleToExplainScenario {
+						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["ScenarioExplained"], topic.WhatSceanrioQuestion))
+					} else {
+						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["ScenarioNotExplained"], topic.WhatSceanrioQuestion))
+					}
+				}
+				if topic.InDepthUnderstanding {
+					sFeedback.FeedbackText += fmt.Sprintf("%s %s %s. \n", candidate, has, fmt.Sprintf(feedbackMapping["InDepthUnderstanding"], topic.TheoryQuestion))
+				}
+
+				if topic.IsHandsOn {
+					sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, is, fmt.Sprintf(feedbackMapping["Hands-On-Topic"], topic.TopicName))
+				}
+			}
+
+			if tech.InDepthUnderstanding {
+				//fmt.Println(tech.QuestionsAsked)
+				sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s. \n", candidate, has, fmt.Sprintf(feedbackMapping["InDepthUnderstanding"], tech.QuestionsAsked))
+			}
+
+			if tech.IsHandsOn {
+				sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s.\n", candidate, is, feedbackMapping["Hands-On"])
+			}
+		}
+	}
+	return sFeedbackSlice
 }
