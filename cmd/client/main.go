@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"time"
 
 	"github.com/golang/protobuf/jsonpb"
@@ -33,8 +34,16 @@ type clientConfig struct {
 	client     f.FeedbackServiceClient
 }
 
+var pwd = ""
+
 func init() {
-	tpl = template.Must(template.ParseGlob("./cmd/client/ui/static/templates/*.html"))
+	var err error
+	pwd, err = os.Getwd()
+	if err != nil {
+		logrus.Fatal("Unable to get Working Directory.. ", err)
+	}
+	fmt.Println(pwd)
+	tpl = template.Must(template.ParseGlob(pwd + "/cmd/client/ui/static/templates/*.html"))
 }
 
 func main() {
@@ -56,12 +65,15 @@ func main() {
 	buildAndRunCliApp(logger, cc)
 
 	//Build HTTP Router and Run client server
-	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("./ui/static/css/"))))
-	http.Handle("/js/", http.StripPrefix("/js", http.FileServer(http.Dir("./ui/static/js/"))))
-	http.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.Dir("./ui/static/images"))))
-	http.HandleFunc("/", index)
+	mux := http.NewServeMux()
+	mux.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/cmd/client/ui/static/css/")))))
+	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/cmd/client/ui/static/js/")))))
+	imgServer := http.FileServer(http.Dir(filepath.FromSlash(pwd + "/cmd/client/ui/static/img/")))
+	mux.Handle("/img/", http.StripPrefix("/img/", imgServer))
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	mux.HandleFunc("/", index)
+
+	log.Fatal(http.ListenAndServe(":8080", mux))
 
 }
 func index(w http.ResponseWriter, r *http.Request) {
