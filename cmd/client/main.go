@@ -5,6 +5,9 @@ import (
 	"feedback-generator/internal/config"
 	f "feedback-generator/pkg/api/v1/feedbackreqpb"
 	"fmt"
+	"html/template"
+	"log"
+	"net/http"
 	"os"
 	"time"
 
@@ -22,6 +25,7 @@ const (
 )
 
 var serverAddr = "localhost:9090"
+var tpl *template.Template
 
 type clientConfig struct {
 	logger     *logrus.Logger
@@ -29,122 +33,40 @@ type clientConfig struct {
 	client     f.FeedbackServiceClient
 }
 
+func init() {
+	tpl = template.Must(template.ParseGlob("./cmd/client/ui/static/templates/*.html"))
+}
+
 func main() {
 	logger, err := config.CreateDefaultLogConfiguration()
 	if err != nil {
-		logger.WithFields(logrus.Fields{
+		logrus.WithFields(logrus.Fields{
 			"filename": "logger",
 			"status":   500,
 			"Error":    err,
-		}).Fatal("Unable to read the Config file given!")
+		}).Fatal("Unable to create the default logger configuration!")
 	}
 
 	//Connect to grpc server
-	conn, err := grpc.Dial("localhost:9090", grpc.WithInsecure())
+	conn := connectToGRPCServer(logger)
 	defer conn.Close()
-	if err != nil {
-		logger.WithFields(logrus.Fields{
-			"server": "localhost:9090",
-			"status": 500,
-			"Error":  err,
-		}).Fatalln("Unable to connect to grpc server")
-	}
 
-	client := f.NewFeedbackServiceClient(conn)
+	cc := initializeClientConfig(logger, conn)
+	//Building cli tool for creating and generating feedback response
+	buildAndRunCliApp(logger, cc)
 
-	cc := &clientConfig{
-		logger:     logger,
-		clientConn: conn,
-		client:     client,
-	}
+	//Build HTTP Router and Run client server
+	http.Handle("/css/", http.StripPrefix("/css", http.FileServer(http.Dir("./ui/static/css/"))))
+	http.Handle("/js/", http.StripPrefix("/js", http.FileServer(http.Dir("./ui/static/js/"))))
+	http.Handle("/images/", http.StripPrefix("/images", http.FileServer(http.Dir("./ui/static/images"))))
+	http.HandleFunc("/", index)
 
-	app := cli.NewApp()
+	log.Fatal(http.ListenAndServe(":8080", nil))
 
-	app.EnableBashCompletion = true
-	app.Name = "feedback-generator"
-	app.Authors = []*cli.Author{
-		&cli.Author{
-			Name:  "Deepak Singh",
-			Email: "deepaksingh04@gmail.com",
-		},
-	}
-	app.Copyright = "(c) 2020 feedback-generator"
-	app.Commands = []*cli.Command{
-		{
-			Name:    "create",
-			Aliases: []string{"c"},
-			Usage:   "Create Feedback Request",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "create",
-					Aliases: []string{"c"},
-					Usage:   "-c [requestID]",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				cc.createFeedbackRequest()
-				return nil
-			},
-		},
-		{
-			Name:    "read",
-			Aliases: []string{"r"},
-			Usage:   "Read Feedback Request",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "read",
-					Aliases: []string{"r"},
-					Usage:   "-r [requestID]",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				requestID := c.String("read")
-				cc.readFeedbackRequest(requestID)
-				return nil
-			},
-		},
-		{
-			Name:    "delete",
-			Aliases: []string{"d"},
-			Usage:   "Delete created request",
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "delete",
-					Aliases: []string{"d"},
-					Usage:   "-d [requestID]",
-				},
-			},
-			Action: func(c *cli.Context) error {
-				requestID := c.String("delete")
-				cc.deleteFeedbackRequest(requestID)
-				return nil
-			},
-		},
-		{
-			Name:    "generate",
-			Aliases: []string{"g"},
-			Flags: []cli.Flag{
-				&cli.StringFlag{
-					Name:    "gen",
-					Aliases: []string{"g"},
-					Usage:   "-g [requestID]",
-				},
-			},
-			Usage: "Generate feedback for the created request",
-			Action: func(c *cli.Context) error {
-				requestID := c.String("gen")
-				cc.generateFeedbackResponse(requestID)
-				return nil
-			},
-		},
-	}
-
-	errs := app.Run(os.Args)
-
-	if errs != nil {
-		logger.Fatalf("Error in initiating commands %s", errs)
-	}
-
+}
+func index(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "text/html")
+	tpl.ExecuteTemplate(w, "index.html", nil)
 }
 
 func (cc *clientConfig) createFeedbackRequest() {
@@ -261,4 +183,117 @@ func (cc *clientConfig) generateFeedbackResponse(requestID string) {
 	fmt.Println("")
 	fmt.Println("Error:")
 	fmt.Println(err)
+}
+
+func connectToGRPCServer(logger *logrus.Logger) *grpc.ClientConn {
+	conn, err := grpc.Dial("localhost:9090", grpc.WithInsecure())
+	if err != nil {
+		logger.WithFields(logrus.Fields{
+			"server": "localhost:9090",
+			"status": 500,
+			"Error":  err,
+		}).Fatalln("Unable to connect to grpc server")
+	}
+	return conn
+}
+func initializeClientConfig(logger *logrus.Logger, conn *grpc.ClientConn) *clientConfig {
+	client := f.NewFeedbackServiceClient(conn)
+
+	cc := &clientConfig{
+		logger:     logger,
+		clientConn: conn,
+		client:     client,
+	}
+
+	return cc
+}
+
+func buildAndRunCliApp(logger *logrus.Logger, cc *clientConfig) {
+	//Building cli tool for creating and generating feedback response
+	app := cli.NewApp()
+
+	app.EnableBashCompletion = true
+	app.Name = "feedback-generator"
+	app.Authors = []*cli.Author{
+		&cli.Author{
+			Name:  "Deepak Singh",
+			Email: "deepaksingh04@gmail.com",
+		},
+	}
+	app.Copyright = "(c) 2020 feedback-generator"
+	app.Commands = []*cli.Command{
+		{
+			Name:    "create",
+			Aliases: []string{"c"},
+			Usage:   "Create Feedback Request",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "create",
+					Aliases: []string{"c"},
+					Usage:   "-c [requestID]",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				cc.createFeedbackRequest()
+				return nil
+			},
+		},
+		{
+			Name:    "read",
+			Aliases: []string{"r"},
+			Usage:   "Read Feedback Request",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "read",
+					Aliases: []string{"r"},
+					Usage:   "-r [requestID]",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				requestID := c.String("read")
+				cc.readFeedbackRequest(requestID)
+				return nil
+			},
+		},
+		{
+			Name:    "delete",
+			Aliases: []string{"d"},
+			Usage:   "Delete created request",
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "delete",
+					Aliases: []string{"d"},
+					Usage:   "-d [requestID]",
+				},
+			},
+			Action: func(c *cli.Context) error {
+				requestID := c.String("delete")
+				cc.deleteFeedbackRequest(requestID)
+				return nil
+			},
+		},
+		{
+			Name:    "generate",
+			Aliases: []string{"g"},
+			Flags: []cli.Flag{
+				&cli.StringFlag{
+					Name:    "gen",
+					Aliases: []string{"g"},
+					Usage:   "-g [requestID]",
+				},
+			},
+			Usage: "Generate feedback for the created request",
+			Action: func(c *cli.Context) error {
+				requestID := c.String("gen")
+				cc.generateFeedbackResponse(requestID)
+				return nil
+			},
+		},
+	}
+
+	errs := app.Run(os.Args)
+
+	if errs != nil {
+		logger.Fatalf("Error in initiating commands %s", errs)
+	}
 }

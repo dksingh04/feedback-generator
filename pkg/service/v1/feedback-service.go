@@ -67,7 +67,7 @@ var has = "has"
 var needs = "needs"
 var is = "is"
 var can = "can"
-var topicsCovered = "We have covered following topics:"
+var topicsCovered = "We have covered following topics in '%v':"
 
 // NewFeedbackServiceServer creates FeedbackServiceServer
 func NewFeedbackServiceServer(client *mongo.Client, db *mongo.Database, logger *logrus.Logger) v1.FeedbackServiceServer {
@@ -258,7 +258,7 @@ func generateSkillFeedback(fRes *v1.Feedback) []*v1.SkillFeedback {
 				FeedbackText: fmt.Sprintf("%s. %s.\n", feedbackMapping["s-"+strconv.FormatInt(int64(tech.SkillRating), 10)], feedbackMapping["e-"+strconv.FormatInt(int64(tech.ExperienceRating), 10)]),
 			}
 			sFeedbackSlice = append(sFeedbackSlice, sFeedback)
-			sFeedback.FeedbackText += fmt.Sprintf("\n%s\n", topicsCovered)
+			sFeedback.FeedbackText += fmt.Sprintf("\n%s\n", fmt.Sprintf(topicsCovered, tech.SkillName))
 			//Build topics feedback
 			for _, topic := range tech.Topics {
 				sFeedback.FeedbackText += fmt.Sprintf("\n%s:\n", topic.TopicName)
