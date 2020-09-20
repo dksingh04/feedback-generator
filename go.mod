@@ -5,6 +5,7 @@ go 1.14
 require (
 	github.com/golang/protobuf v1.4.2
 	github.com/julienschmidt/httprouter v1.2.0
+	github.com/monoculum/formam v0.0.0-20200905010316-d7a8fbd33677
 	github.com/sirupsen/logrus v1.4.2
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.4.0

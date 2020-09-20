@@ -27,13 +27,14 @@ type feedbackServiceServer struct {
 }
 
 //Initializing feedback mapping comments, this information we can have in DB, currently having it in code.
-//TODO move this mapping in DB
+//TODO move this mapping in DB or dynamic configuration, so that wording and sentence can be changed dynamically.
 var feedbackMapping = map[string]string{
-	"CodeCompiled":  "written compilable and executable code",
-	"PseudoCode":    "able to write pseudo code",
-	"AlgoEfficient": "it was efficient candidate has considered space and Time complexity, while implementing the solution",
-	"NotEfficient":  "it was not efficient, didn't considered or think of Time and space complexity",
-	//This will go in summary and skill comments
+	"CodeCompiled":             "written compilable and executable code",
+	"PseudoCode":               "able to write pseudo code",
+	"AlgoEfficient":            "it was efficient candidate has considered space and Time complexity, while implementing the solution",
+	"NotEfficient":             "it was not efficient, didn't considered or think of Time and space complexity",
+	"total_experience":         "total %v years of experience and have worked on following tech-stacks (%v)",
+	"current_experience":       "and since last %v years he is working on following tech-stacks (%v)",
 	"Proxy":                    "using proxy and someone else was giving Interview on behalf of him, since it was proxy hence I have done some basic discussion on each skill sets.",
 	"Whiteboard_explained":     "in white-boarding session, candidate has performed very well, explained the solution with proper diagram and flow.",
 	"Whiteboard_partial":       "in white-boarding session, candidate was partially able to explain the solution",
@@ -87,7 +88,6 @@ func (fs *feedbackServiceServer) checkAPI(api string) error {
 func (fs *feedbackServiceServer) Create(ctx context.Context, req *v1.FeedbackRequest) (*v1.FeedbackResponse, error) {
 
 	if err := fs.checkAPI(req.Api); err != nil {
-		fmt.Println(err)
 		return new(v1.FeedbackResponse), err
 	}
 	fReq := req.GetFeedbackReq()
@@ -203,9 +203,46 @@ func (fs *feedbackServiceServer) Delete(ctx context.Context, req *v1.DeleteFeedb
 
 	return fRes, nil
 }
+func (fs *feedbackServiceServer) GenerateFeedbackFromFormData(ctx context.Context, req *v1.GenerateFeedbackRequest) (*v1.GeneratedFeedbackResponse, error) {
+
+	gfRes := &v1.GeneratedFeedbackResponse{}
+	gfRes.Api = "v1"
+
+	fRes := req.FeedbackReq
+
+	var summaryText = req.SummaryNote + "\n\n"
+
+	if fRes.IsProxy {
+		summaryText += fmt.Sprintf("%s %s %s", candidate, was, feedbackMapping["Proxy"])
+	} else {
+		//generate summaryText
+		summaryText = generateSummaryText(summaryText, fRes)
+		// Build skill feedback
+		sFeedbackSlice := generateSkillFeedback(fRes)
+
+		gfRes.SkillFeedback = sFeedbackSlice
+	}
+
+	gfRes.SummaryText = summaryText
+	gfRes.StatusCode = http.StatusOK
+
+	gfRes.Message = "Generated feedback successfully"
+
+	return gfRes, nil
+}
 
 func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
 	// Build feedback when coding is required.
+	if fRes.TotalYearExperience > 0 && fRes.TotalYearExperience < 50 {
+		summaryText += fmt.Sprintf("%s %s %s", candidate, has, fmt.Sprintf(feedbackMapping["total_experience"], fRes.TotalYearExperience, fRes.ToolsTechnologiesWorkedOn))
+	}
+	if fRes.CurrentTechStackExperience > 0 && fRes.CurrentTechStackExperience < 50 {
+		if fRes.CurrentTechStackExperience == fRes.TotalYearExperience {
+			summaryText += " and currently working on the same tech stack\n\n"
+		} else {
+			summaryText += fmt.Sprintf(" %s.\n\n", fmt.Sprintf(feedbackMapping["current_experience"], fRes.CurrentTechStackExperience, fRes.CurrentToolsTechnologiesWorkedOn))
+		}
+	}
 	if fRes.IsCodingRequired {
 		if fRes.IsCodeCompiled && fRes.IsAlgoEfficient {
 			summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["AlgoEfficient"])
@@ -235,6 +272,10 @@ func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
 			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_explained"])
 		} else {
 			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_not_explained"])
+		}
+
+		if fRes.AnyWhiteboardComment != "" {
+			summaryText += fmt.Sprintf("%s.\n", fRes.AnyWhiteboardComment)
 		}
 	}
 
@@ -284,7 +325,6 @@ func generateSkillFeedback(fRes *v1.Feedback) []*v1.SkillFeedback {
 			}
 
 			if tech.InDepthUnderstanding {
-				//fmt.Println(tech.QuestionsAsked)
 				sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s. \n", candidate, has, fmt.Sprintf(feedbackMapping["InDepthUnderstanding"], tech.QuestionsAsked))
 			}
 

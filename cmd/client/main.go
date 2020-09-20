@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"encoding/json"
 	"feedback-generator/internal/config"
 	f "feedback-generator/pkg/api/v1/feedbackreqpb"
 	"fmt"
@@ -27,6 +28,7 @@ const (
 
 var serverAddr = "localhost:9090"
 var tpl *template.Template
+var cc *clientConfig
 
 type clientConfig struct {
 	logger     *logrus.Logger
@@ -60,17 +62,18 @@ func main() {
 	conn := connectToGRPCServer(logger)
 	defer conn.Close()
 
-	cc := initializeClientConfig(logger, conn)
+	cc = initializeClientConfig(logger, conn)
 	//Building cli tool for creating and generating feedback response
 	buildAndRunCliApp(logger, cc)
 
 	//Build HTTP Router and Run client server
+	//router := httprouter.New()
 	mux := http.NewServeMux()
+	//router.Ha
 	mux.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/cmd/client/ui/static/css/")))))
 	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/cmd/client/ui/static/js/")))))
 	imgServer := http.FileServer(http.Dir(filepath.FromSlash(pwd + "/cmd/client/ui/static/img/")))
 	mux.Handle("/img/", http.StripPrefix("/img/", imgServer))
-
 	mux.HandleFunc("/", index)
 
 	log.Fatal(http.ListenAndServe(":8080", mux))
@@ -78,7 +81,35 @@ func main() {
 }
 func index(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
-	tpl.ExecuteTemplate(w, "index.html", nil)
+	if r.Method == http.MethodGet {
+		tpl.ExecuteTemplate(w, "index.html", nil)
+	} else {
+		//It is POST method
+		var t *f.Feedback
+		json.NewDecoder(r.Body).Decode(&t)
+		fmt.Println(t.TechSkills[0].Topics[1])
+		generateFeedbackResponseFromRequest(t)
+		tpl.ExecuteTemplate(w, "index.html", t)
+
+	}
+
+}
+func generateFeedbackResponseFromRequest(feedback *f.Feedback) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	fmt.Println(feedback)
+	fReq := &f.GenerateFeedbackRequest{Api: "v1", FeedbackReq: feedback, SummaryNote: "Summary Notes"}
+	fRes, err := cc.client.GenerateFeedbackFromFormData(ctx, fReq)
+	fmt.Println("Professional Summary:")
+	fmt.Println("")
+	fmt.Printf(fRes.SummaryText)
+	fmt.Println("")
+	fmt.Printf("%s:\n\n", fRes.SkillFeedback[0].Skill)
+	fmt.Printf(fRes.SkillFeedback[0].FeedbackText)
+	fmt.Println("")
+	fmt.Println("")
+	fmt.Println("Error:")
+	fmt.Println(err)
 }
 
 func (cc *clientConfig) createFeedbackRequest() {
@@ -91,20 +122,24 @@ func (cc *clientConfig) createFeedbackRequest() {
 	fReq := f.FeedbackRequest{
 		Api: apiVersion,
 		FeedbackReq: &f.Feedback{
-			CandidateName:           "Deepak Singh",
-			RecruiterName:           "Amanda",
-			CreatDate:               createDate,
-			UpdateDate:              createDate,
-			IsCodingRequired:        true,
-			IsAbleToWritePseudoCode: true,
-			IsAlgoEfficient:         true,
-			IsCodeCompiled:          false,
-			IsIdRequired:            false,
-			IsProxy:                 false,
-			IsWhiteboardingRequired: false,
-			IsWhiteboardDone:        false,
-			JobType:                 "Full-Stack Java Developer",
-			MyComments:              "Good Candidate",
+			CandidateName:                    "Deepak Singh",
+			RecruiterName:                    "Amanda",
+			CreatDate:                        createDate,
+			UpdateDate:                       createDate,
+			IsCodingRequired:                 true,
+			IsAbleToWritePseudoCode:          true,
+			IsAlgoEfficient:                  true,
+			IsCodeCompiled:                   false,
+			IsIdRequired:                     false,
+			IsProxy:                          false,
+			IsWhiteboardingRequired:          false,
+			IsWhiteboardDone:                 false,
+			JobType:                          "Full-Stack Java Developer",
+			TotalYearExperience:              13,
+			ToolsTechnologiesWorkedOn:        "Core-Java, JSP, Servlet, Spring MVC, SpringBoot, Hibernate, MongoDB etc.",
+			CurrentTechStackExperience:       5,
+			CurrentToolsTechnologiesWorkedOn: "SpringBoot, REST API, Docker, AWS Cloud services etc",
+			MyComments:                       "Good Candidate",
 			TechSkills: []*f.TechSkill{
 				&f.TechSkill{
 					SkillName:            "Java",
@@ -192,6 +227,7 @@ func (cc *clientConfig) generateFeedbackResponse(requestID string) {
 	fmt.Println("")
 	fmt.Printf("%s:\n\n", fRes.SkillFeedback[0].Skill)
 	fmt.Printf(fRes.SkillFeedback[0].FeedbackText)
+	fmt.Println("")
 	fmt.Println("")
 	fmt.Println("Error:")
 	fmt.Println(err)

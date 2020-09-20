@@ -5,6 +5,8 @@
         <meta name="author" content="Deepak Singh">
         <title>Feedback-Generator</title>
         <link rel="stylesheet" type="text/css" href="../css/bootstrap.min.css">
+        <link href="form-validation.css" type="text/css" rel="stylesheet">
+        <script src="../js/jquery.min.js"></script>
         <script src="../js/bootstrap.bundle.min.js"></script>
     </head>
     <body class="bg-light">
@@ -14,194 +16,254 @@
                 <h2>Feedback Generator</h2>
                 <p class="lead">Tool can be used for generating feedback for all the discussion being done. You have to answer to just few questions and get nice formatted feedback generated. Isn't that Awesome. Development of this tool is in progress.</p>
             </div>
-                <div class="row">
-                    <div class="col-md-auto">
-                        <h4 class="mb-6">Please Answer Followings</h4>
-                        <form class="needs-validation" novalidate="">
-                            <div class="mb-3">
-                                <label for="jobtype">Job Type</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="jobtype" placeholder="jobtype" required="">
-                                    <div class="invalid-feedback" style="width: 100%;">
-                                        Job Type name is required.
-                                    </div>
-                                </div>  
+            
+            <div class="row">
+                <div class="col-md-auto">
+                    <h4 class="mb-6">Please Answer Followings</h4>
+                    <form class="needs-validation was-validated" novalidate id="generate-feedback">
+                        <div class="mb-3">
+                            <label for="jobtype">Job Type</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="jobtype" placeholder="jobtype" required="" name="job_type">
+                                <div class="invalid-feedback" style="width: 100%;">
+                                    Job Type name is required.
+                                </div>
+                            </div>  
+                        </div>
+                        <hr class="mb-4">
+                        <div class="mb-3">
+                            <label for="year-experience">Total Year of Experience</label>
+                            <input type="number" class="form-control" name="total_year_experience" id="year-experience" placeholder="Total Year of Experience" value="" required="">
+                            <div class="invalid-feedback">
+                                Year of Experience is required.
                             </div>
-                            <hr class="mb-4">
-                            <div class="mb-3">
-                                <label for="year-experience">Total Year of Experience</label>
-                                <input type="number" class="form-control" id="year-experience" placeholder="Total Year of Experience" value="" required="">
+                        </div>
+                        <div class="mb-3">
+                            <label for="tools-technologies">Tools/Technologies used, please enter the names comma (,) seperated</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="tools_technologies_worked_on" id="tools-technologies" placeholder="Tools/Technologies" required="">
+                                <div class="invalid-feedback" style="width: 100%;">
+                                    Tools/Technologies is required.
+                                </div>
+                            </div>  
+                        </div>
+                        <div class="mb-3">
+                            <label for="current-year-experience">Current tech-stacks Year of Experience</label>
+                            <input type="number" class="form-control" name="current_tech_stack_experience" id="current-year-experience" placeholder="Current Experience on the Tech-Stack" value="" required="">
+                            <div class="invalid-feedback">
+                                Prior Year of Experience is required.
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="current-techstack">Current Tools/Technologies being used, please enter the names comma (,) seperated</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="current_tools_technologies_worked_on" id="current-techstack" placeholder="Current Tools/Technologies" required="">
+                                <div class="invalid-feedback" style="width: 100%;">
+                                    Current Tools/Technologies is required.
+                                </div>
+                            </div>  
+                        </div>
+                        <hr class="mb-4">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="is_proxy" id="is-proxy">
+                            <label class="custom-control-label" for="is-proxy">Is candidate using proxy</label>
+                        </div>
+                        <hr class="mb-4">
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="is_coding_required" id="is-coding-required">
+                            <label class="custom-control-label" for="is-coding-required">Coding Question asked?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="is_code_compiled" id="is-code-compiled">
+                            <label class="custom-control-label" for="is-code-compiled">Candidate written compilable code?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="is_able_to_write_pseudoCode" id="pseudo-code">
+                            <label class="custom-control-label" for="pseudo-code">Was able to write pseudo code?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="is_algo_efficient" id="algo-efficient">
+                            <label class="custom-control-label" for="algo-efficient">Was code Algorithimically correct and efficient?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="followed_coding_standards" id="followed_coding_standards">
+                            <label class="custom-control-label" for="followed_coding_standards">Does Candidate followed coding standards?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="is_whiteboarding_required" id="is-whiteboard-required">
+                            <label class="custom-control-label" for="is-whiteboard-required">Whiteboard problem asked?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="is_whiteboard_done" id="is_whiteboard_done">
+                            <label class="custom-control-label" for="is_whiteboard_done">Candidate was able to solve Whiteboard problem?</label>
+                        </div>
+                        <hr class="mb-4">
+                        <div class="mb-3">
+                            <label for="any_coding_comment">Any other coding test comment you want to share (If not leave it blank)?</label>
+                            <textarea class="form-control" name="any_coding_comment" id="any_coding_comment" rows="3" placeholder="Any other coding comment?" value=""></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="any_whiteboard_comment">Any other whiteboard test comment you want to share (If not leave it blank)?</label>
+                            <textarea class="form-control" name="any_whiteboard_comment" id="any_whiteboard_comment" rows="3" placeholder="Any other whiteboard test comment?" value=""></textarea>
+                        </div>
+                        <hr class="mb-4">
+                        <h4 class="mb-3">Skills</h4>
+                        <hr class="mb-4">
+                        <div class="mb-3">
+                            <label for="skill-name">Skill Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="skill_name" id="skill-name" placeholder="Java" required="">
+                                <div class="invalid-feedback" style="width: 100%;">
+                                    Skill Name name is required.
+                                </div>
+                            </div>  
+                        </div>
+                        <hr class="mb-4">
+                        <h4 class="mb-3">Ratings (1-5)</h4>
+                        <div class="row">
+                            <div class="col-md-5 mb-3">
+                                <label for="country">Skill Rating</label>
+                                <select class="custom-select d-block w-100" name="skill_rating" id="skill-rating" required="">
+                                    <option value="">Choose...</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
                                 <div class="invalid-feedback">
-                                    Year of Experience is required.
+                                    Please select a valid skill rating.
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="tools-technologies">Tools/Technologies used, please enter the names comma (,) seperated</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="tools-technologies" placeholder="Tools/Technologies" required="">
-                                    <div class="invalid-feedback" style="width: 100%;">
-                                        Tools/Technologies is required.
-                                    </div>
-                                </div>  
-                            </div>
-                            <div class="mb-3">
-                                <label for="current-year-experience">Current tech-stacks Year of Experience</label>
-                                <input type="number" class="form-control" id="current-year-experience" placeholder="Current Experience on the Tech-Stack" value="" required="">
+                            <div class="col-md-4 mb-3">
+                                <label for="state">Experience Rating</label>
+                                <select class="custom-select d-block w-100" name="experience_rating" id="experience-rating" required="">
+                                    <option value="">Choose...</option>
+                                    <option>1</option>
+                                    <option>2</option>
+                                    <option>3</option>
+                                    <option>4</option>
+                                    <option>5</option>
+                                </select>
                                 <div class="invalid-feedback">
-                                    Prior Year of Experience is required.
+                                    Please provide a valid Experience rating.
                                 </div>
                             </div>
-                            <div class="mb-3">
-                                <label for="current-techstack">Current Tools/Technologies being used, please enter the names comma (,) seperated</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="current-techstack" placeholder="Current Tools/Technologies" required="">
-                                    <div class="invalid-feedback" style="width: 100%;">
-                                        Current Tools/Technologies is required.
-                                    </div>
-                                </div>  
-                            </div>
-                            <hr class="mb-4">
+                        </div>
                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is-proxy">
-                                <label class="custom-control-label" for="is-proxy">Is candidate using proxy</label>
-                            </div>
-                            <hr class="mb-4">
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is-coding-required">
-                                <label class="custom-control-label" for="is-coding-required">Coding Question asked?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is-code-compiled">
-                                <label class="custom-control-label" for="is-code-compiled">Candidate written compilable code?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="pseudo-code">
-                                <label class="custom-control-label" for="pseudo-code">Was able to write pseudo code?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="algo-efficient">
-                                <label class="custom-control-label" for="algo-efficient">Was code Algorithimically correct and efficient?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="followed_coding_standards">
-                                <label class="custom-control-label" for="followed_coding_standards">Does Candidate followed coding standards?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is-whiteboard-required">
-                                <label class="custom-control-label" for="is-whiteboard-required">Whiteboard problem asked?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_whiteboard_done">
-                                <label class="custom-control-label" for="is_whiteboard_done">Candidate was able to solve Whiteboard problem?</label>
-                            </div>
-                            <hr class="mb-4">
-                            <div class="mb-3">
-                                <label for="any_coding_comment">Any other coding test comment you want to share (If not leave it blank)?</label>
-                                <textarea class="form-control" id="any_coding_comment" rows="3" placeholder="Any other coding comment?" value=""></textarea>
-                            </div>
-                            <div class="mb-3">
-                                <label for="any_whiteboard_comment">Any other whiteboard test comment you want to share (If not leave it blank)?</label>
-                                <textarea class="form-control" id="any_whiteboard_comment" rows="3" placeholder="Any other whiteboard test comment?" value=""></textarea>
-                            </div>
-                            <hr class="mb-4">
-                            <h4 class="mb-3">Skills</h4>
-                            <hr class="mb-4">
-                            <div class="mb-3">
-                                <label for="skill-name">Skill Name</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="skill-name" placeholder="Java" required="">
-                                    <div class="invalid-feedback" style="width: 100%;">
-                                        Skill Name name is required.
-                                    </div>
-                                </div>  
-                            </div>
-                            <hr class="mb-4">
-                            <h4 class="mb-3">Ratings (1-5)</h4>
-                            <div class="row">
-                                <div class="col-md-5 mb-3">
-                                    <label for="country">Skill Rating</label>
-                                    <select class="custom-select d-block w-100" id="skill" required="">
-                                        <option value="">Choose...</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Please select a valid skill rating.
-                                    </div>
+                            <input type="checkbox" class="custom-control-input" name="is_hands_on" id="is_hands_on_with_skill">
+                            <label class="custom-control-label" for="is_hands_on_with_skill">Is Candidate hands-on with the skill?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="in_depth_understanding" id="in_depth_understanding">
+                            <label class="custom-control-label" for="in_depth_understanding">Does Candidate have in-depth understanding of the skill?</label>
+                        </div>
+                        <hr class="mb-4">
+                        <h4 class="mb-3">Topics covered under the skill</h4>
+                        <div class="mb-3">
+                            <label for="topic-name">Topic Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="topic_name" id="topic-name" placeholder="e.g. OOPs" required="">
+                                <div class="invalid-feedback" style="width: 100%;">
+                                    Topic Name is required.
                                 </div>
-                                <div class="col-md-4 mb-3">
-                                    <label for="state">Experience Rating</label>
-                                    <select class="custom-select d-block w-100" id="experience-rating" required="">
-                                        <option value="">Choose...</option>
-                                        <option>1</option>
-                                        <option>2</option>
-                                        <option>3</option>
-                                        <option>4</option>
-                                        <option>5</option>
-                                    </select>
-                                    <div class="invalid-feedback">
-                                        Please provide a valid Experience rating.
-                                    </div>
-                                </div>
-                            </div>
-                             <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_hands_on_with_skill">
-                                <label class="custom-control-label" for="is_hands_on_with_skill">Is Candidate hands-on with the skill?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="in_depth_understanding">
-                                <label class="custom-control-label" for="in_depth_understanding">Does Candidate have in-depth understanding of the skill?</label>
-                            </div>
-                            <hr class="mb-4">
-                            <h4 class="mb-3">Topics covered under the skill</h4>
-                            <div class="mb-3">
-                                <label for="topic-name">Topic Name</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="topic-name" placeholder="e.g. OOPs" required="">
-                                    <div class="invalid-feedback" style="width: 100%;">
-                                        Topic Name is required.
-                                    </div>
-                                </div>  
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_able_to_exaplain_topic">
-                                <label class="custom-control-label" for="is_able_to_exaplain_topic">Does Candidate explained the topic very well?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="partially_explained_topic">
-                                <label class="custom-control-label" for="partially_explained_topic">Does Candidate explained the topic partially?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_hands_on_topic">
-                                <label class="custom-control-label" for="is_hands_on_topic">Is Candidate hands-on with the topic?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_scenario_covered">
-                                <label class="custom-control-label" for="is_scenario_covered">Any Scenario/Practical question being asked?</label>
-                            </div>
-                            <div class="custom-control custom-checkbox">
-                                <input type="checkbox" class="custom-control-input" id="is_able_to_explain_scenario">
-                                <label class="custom-control-label" for="is_able_to_explain_scenario">Does candidate explained Scenario/Practical question being asked?</label>
-                            </div>
-                            <hr class="mb-4">
-                            <div class="mb-3">
-                                <label for="topic-name">What Scenario Question asked</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="scenario-question-name" placeholder="e.g. What OOPs concepts used in the project and why" required="">
-                                </div>  
-                            </div>
-                            <hr class="mb-4">
-                            <button class="btn btn-primary btn-lg btn-block" type="submit">Generate Feedback Report</button>
-                        </form>
-                    </div>
+                            </div>  
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="isAbleToExaplain" id="is_able_to_exaplain_topic">
+                            <label class="custom-control-label" for="is_able_to_exaplain_topic">Does Candidate explained the topic very well?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="partiallyExplained" id="partially_explained_topic">
+                            <label class="custom-control-label" for="partially_explained_topic">Does Candidate explained the topic partially?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="isHandsOn" id="is_hands_on_topic">
+                            <label class="custom-control-label" for="is_hands_on_topic">Is Candidate hands-on with the topic?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="isScenarioCovered" id="is_scenario_covered">
+                            <label class="custom-control-label" for="is_scenario_covered">Any Scenario/Practical question being asked?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario" id="is_able_to_explain_scenario">
+                            <label class="custom-control-label" for="is_able_to_explain_scenario">Does candidate explained Scenario/Practical question being asked?</label>
+                        </div>
+                        <hr class="mb-4">
+                        <div class="mb-3">
+                            <label for="scenario-question-name">What Scenario Question asked</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="whatSceanrioQuestion" id="scenario-question-name" placeholder="e.g. What OOPs concepts used in the project and why" required="">
+                            </div>  
+                        </div>
+                        <hr class="mb-4">
+                        <button class="btn btn-primary btn-lg btn-block" id="submit-button" type="submit">Generate Feedback Report</button>
+                    </form>
                 </div>
             </div>
+        </div>
             <footer class="my-5 pt-5 text-muted text-center text-small">
                 <p class="mb-1">(c) 2019-2020 Deepak Singh</p>
             </footer>
         </div>
     </body>
+    <src script="form-validation.js">
+    </src>
+    <script>
+        $("#submit-button").on('click', function(event){
+            // send ajax
+            event.preventDefault(); //prevent default action 
+            var array = jQuery("#generate-feedback").serializeArray();
+            var jsonData = {
+                "tech_skills": []
+            };
+
+            var skill = {"topics":[]};
+            var topic = {};
+            
+            jQuery.each(array, function() {
+                jsonData[this.name] = this.value==="on"?true:isNaN(this.value)?this.value:parseInt(this.value) || '';
+            });
+            //build skill and topic object
+            skill.skill_name = $("#skill-name").val();
+            skill.skill_rating = parseInt($("#skill-rating").val());
+            skill.experience_rating = parseInt($("#experience-rating").val());
+            skill.is_hands_on = $("#is_hands_on_with_skill").val() == "on"?true:false;
+            skill.in_depth_understanding = $("#in_depth_understanding").val() == "on"?true:false;
+            
+            topic.topic_name = $("#topic-name").val();
+            topic.is_able_to_exaplain = $("#is_able_to_exaplain_topic").val() == "on"?true:false;
+            topic.partially_explained = $("#partially_explained_topic").val() == "on"?true:false;
+            topic.is_hands_on = $("#is_hands_on_topic").val() == "on"?true:false;
+            topic.is_scenario_covered = $("#is_scenario_covered").val() == "on"?true:false;
+            topic.is_able_to_explain_scenario = $("#is_able_to_explain_scenario").val() == "on"?true:false;
+            topic.what_sceanrio_question = $("#scenario-question-name").val();
+
+            skill.topics.push(topic);
+
+            jsonData.tech_skills.push(skill);
+            
+            console.log(skill)
+            //var jsonData = $("#generate-feedback").serialize();
+            console.log(JSON.stringify(jsonData));
+
+            $.ajax({
+                url: '/', // url where to submit the request
+                type : "POST", // type of action POST || GET
+                dataType : 'json', // data type
+                data : JSON.stringify(jsonData), // post data || get data
+                success : function(result) {
+                    // you can see the result from the console
+                    // tab of the developer tools
+                    console.log(result);
+                },
+                error: function(xhr, resp, text) {
+                    console.log(xhr, resp, text);
+                }
+            })
+             
+        });
+       
+
+    </script>
 </html>

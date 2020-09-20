@@ -30,7 +30,10 @@ message Feedback {
     string any_whiteboard_comment = 21;
     string any_coding_comment = 22;
     bool followed_coding_standards = 23;
-
+    int32 total_year_experience = 24;
+    string tools_technologies_worked_on = 25;
+    int32 current_tech_stack_experience = 26;
+    string current_tools_technologies_worked_on = 27;
 }
 
 message TechSkill {
@@ -115,5 +118,6 @@ service FeedbackService {
     rpc Read(ReadFeedbackRequest) returns (FeedbackResponse);
     rpc GenerateFeedbackForRequest(GenerateFeedbackRequest) returns (GeneratedFeedbackResponse);
     rpc Delete(DeleteFeedbackRequest) returns (DeleteFeedbackResponse);
+    rpc GenerateFeedbackFromFormData(GenerateFeedbackRequest) returns (GeneratedFeedbackResponse);
 }
 
