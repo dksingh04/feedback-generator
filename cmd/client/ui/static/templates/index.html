@@ -150,7 +150,14 @@
                                 </div>
                             </div>
                         </div>
-                            <div class="custom-control custom-checkbox">
+                        <div class="mb-3">
+                            <label for="topic-name">Question Asked in the skill, Please enter the topics comma separated</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="questions_asked" id="questions_asked" placeholder="e.g. OOPs, Multithreading, Exception Handling, Collection classes etc.">
+                            </div>  
+                        </div>
+                        <hr class="mb-4">
+                        <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="is_hands_on" id="is_hands_on_with_skill">
                             <label class="custom-control-label" for="is_hands_on_with_skill">Is Candidate hands-on with the skill?</label>
                         </div>
@@ -158,6 +165,7 @@
                             <input type="checkbox" class="custom-control-input" name="in_depth_understanding" id="in_depth_understanding">
                             <label class="custom-control-label" for="in_depth_understanding">Does Candidate have in-depth understanding of the skill?</label>
                         </div>
+                        
                         <hr class="mb-4">
                         <h4 class="mb-3">Topics covered under the skill</h4>
                         <div class="mb-3">
@@ -167,6 +175,12 @@
                                 <div class="invalid-feedback" style="width: 100%;">
                                     Topic Name is required.
                                 </div>
+                            </div>  
+                        </div>
+                        <div class="mb-3">
+                            <label for="topic-name">What kind of Question being asked? Please enter them comma separated</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="theory_question" id="theory_question" placeholder="e.g. Polymorphism, Enacpasulation, Inheritance, Design Principles and class Designing etc.">
                             </div>  
                         </div>
                         <div class="custom-control custom-checkbox">
@@ -189,6 +203,7 @@
                             <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario" id="is_able_to_explain_scenario">
                             <label class="custom-control-label" for="is_able_to_explain_scenario">Does candidate explained Scenario/Practical question being asked?</label>
                         </div>
+                        
                         <hr class="mb-4">
                         <div class="mb-3">
                             <label for="scenario-question-name">What Scenario Question asked</label>
@@ -230,7 +245,8 @@
             skill.experience_rating = parseInt($("#experience-rating").val());
             skill.is_hands_on = $("#is_hands_on_with_skill").val() == "on"?true:false;
             skill.in_depth_understanding = $("#in_depth_understanding").val() == "on"?true:false;
-            
+            skill.questions_asked = $("#questions_asked").val();
+
             topic.topic_name = $("#topic-name").val();
             topic.is_able_to_exaplain = $("#is_able_to_exaplain_topic").val() == "on"?true:false;
             topic.partially_explained = $("#partially_explained_topic").val() == "on"?true:false;
@@ -238,6 +254,7 @@
             topic.is_scenario_covered = $("#is_scenario_covered").val() == "on"?true:false;
             topic.is_able_to_explain_scenario = $("#is_able_to_explain_scenario").val() == "on"?true:false;
             topic.what_sceanrio_question = $("#scenario-question-name").val();
+            topic.theory_question = $("#theory_question").val();
 
             skill.topics.push(topic);
 
