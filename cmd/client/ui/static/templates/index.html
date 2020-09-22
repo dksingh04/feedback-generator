@@ -189,7 +189,7 @@
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="partiallyExplained" id="partially_explained_topic">
-                            <label class="custom-control-label" for="partially_explained_topic">Does Candidate explained the topic partially?</label>
+                            <label class="custom-control-label" for="partially_explained_topic">Was able to explain the topic partially?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="isHandsOn" id="is_hands_on_topic">
@@ -214,17 +214,18 @@
                         <hr class="mb-4">
                         <button class="btn btn-primary btn-lg btn-block" id="submit-button" type="submit">Generate Feedback Report</button>
                     </form>
-                </div>
-                <!--Output report-->
-                <hr class="mb-4">
-                <div class="mb-3">
-                    <label for="feedback-summary-report">Professional Summary</label>
-                    <textarea class="form-control" name="feedback-summary-report" id="feedback-summary-report" rows="5" placeholder="Generated Summary Report will come here" value=""></textarea>
-                </div>
-                <div class="mb-3">
-                    <label for="discussion-feedback-report">Discussion Feedback Report</label>
-                    <textarea class="form-control" name="discussion-feedback-report" id="discussion-feedback-report" rows="5" placeholder="Generated Report based on the discussion" value=""></textarea>
-                </div>
+                    <!--Output report-->
+                    <hr class="mb-4">
+                    <div class="mb-3">
+                        <label for="feedback-summary-report">Professional Summary</label>
+                        <textarea class="form-control" name="feedback-summary-report" id="feedback-summary-report" rows="5" placeholder="Generated Summary Report will come here" value=""></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="discussion-feedback-report">Discussion Feedback Report</label>
+                        <textarea class="form-control" name="discussion-feedback-report" id="discussion-feedback-report" rows="5" placeholder="Generated Report based on the discussion" value=""></textarea>
+                    </div>
+                    </div>
+                
             </div>
 
         </div>
@@ -270,10 +271,6 @@
             skill.topics.push(topic);
 
             jsonData.tech_skills.push(skill);
-            
-            console.log(skill)
-            //var jsonData = $("#generate-feedback").serialize();
-            console.log(JSON.stringify(jsonData));
 
             $.ajax({
                 url: '/', // url where to submit the request
@@ -281,9 +278,8 @@
                 dataType : 'json', // data type
                 data : JSON.stringify(jsonData), // post data || get data
                 success : function(result) {
-                    // you can see the result from the console
-                    // tab of the developer tools
-                    console.log(result);
+                    $("#feedback-summary-report").val(result.summary_text)
+                    $("#discussion-feedback-report").val(result.skill_feedback[0].feedback_text)                   
                 },
                 error: function(xhr, resp, text) {
                     console.log(xhr, resp, text);

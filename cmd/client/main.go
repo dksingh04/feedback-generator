@@ -104,10 +104,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 				"Error":   err,
 			}).Fatalf("Unable to convert response to Json error: %v", err)
 		}
+		//Write the report to response writer
 		w.Write(fReport)
-		fmt.Println(string(fReport))
-		tpl.ExecuteTemplate(w, "index.html", fRes)
-
+		//fmt.Println(string(fReport))
 	}
 
 }
