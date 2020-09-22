@@ -87,14 +87,31 @@ func index(w http.ResponseWriter, r *http.Request) {
 		//It is POST method
 		var t *f.Feedback
 		json.NewDecoder(r.Body).Decode(&t)
-		fmt.Println(t.TechSkills[0].Topics[1])
-		generateFeedbackResponseFromRequest(t)
-		tpl.ExecuteTemplate(w, "index.html", t)
+		fmt.Println(t.TechSkills[0].Topics[0])
+		fRes, err := generateFeedbackResponseFromRequest(t)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"status":  http.StatusInternalServerError,
+				"message": "Unable to process the feedback request and unable to generate response",
+				"Error":   err,
+			}).Fatalf("Unable to process the message error: %v", err)
+		}
+		fReport, err := json.Marshal(fRes)
+		if err != nil {
+			logrus.WithFields(logrus.Fields{
+				"status":  http.StatusInternalServerError,
+				"message": "Unable to convert response to Json ",
+				"Error":   err,
+			}).Fatalf("Unable to convert response to Json error: %v", err)
+		}
+		w.Write(fReport)
+		fmt.Println(string(fReport))
+		tpl.ExecuteTemplate(w, "index.html", fRes)
 
 	}
 
 }
-func generateFeedbackResponseFromRequest(feedback *f.Feedback) {
+func generateFeedbackResponseFromRequest(feedback *f.Feedback) (*f.GeneratedFeedbackResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	fmt.Println(feedback)
@@ -110,6 +127,8 @@ func generateFeedbackResponseFromRequest(feedback *f.Feedback) {
 	fmt.Println("")
 	fmt.Println("Error:")
 	fmt.Println(err)
+
+	return fRes, err
 }
 
 func (cc *clientConfig) createFeedbackRequest() {
