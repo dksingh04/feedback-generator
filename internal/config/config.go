@@ -1,8 +1,8 @@
 package config
 
 import (
-	"fmt"
 	"os"
+	"sync"
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
@@ -12,15 +12,19 @@ import (
 type Config struct {
 	// gRPC server start parameters section
 	// gRPC is TCP port to listen by gRPC server
-	GRPCPort   string
-	DBHost     string
-	DBPort     string
-	DBUri      string
-	DBUser     string
-	DBPassword string
-	DBName     string
-	Server     string
+	GRPCPort     string
+	DBHost       string
+	DBPort       string
+	DBUri        string
+	DBUser       string
+	DBPassword   string
+	DBName       string
+	GRPCServer   string
+	ClientPort   string
+	ClientServer string
 }
+
+var doOnce sync.Once
 
 // ReadConfig will read the configuration from properties file
 func ReadConfig() (*Config, error) {
@@ -28,24 +32,29 @@ func ReadConfig() (*Config, error) {
 	if err != nil {
 		logrus.Fatal("Unable to get Working Directory.. ", err)
 	}
-	fmt.Println(pwd)
+	var v *viper.Viper
+	//fmt.Println(pwd)
+	doOnce.Do(func() {
 
-	v := viper.New()
-	v.SetConfigName("config")
-	v.SetConfigType("yaml")
-	v.AddConfigPath(pwd + "/internal/config")
-	v.AutomaticEnv()
-	err = v.ReadInConfig()
+		v = viper.New()
+		v.SetConfigName("config")
+		v.SetConfigType("yaml")
+		v.AddConfigPath(pwd + "/resources")
+		v.AutomaticEnv()
+		err = v.ReadInConfig()
 
-	if err != nil {
-		return nil, err
-	}
+		if err != nil {
+			logrus.Fatal("Unable to Read Config file ", err)
+		}
+	})
 
 	config := &Config{
-		GRPCPort: v.GetString("grpcport"),
-		DBUri:    v.GetString("mongodb.uri"),
-		DBName:   v.GetString("mongodb.database"),
-		Server:   v.GetString("server"),
+		GRPCPort:     v.GetString("grpcport"),
+		DBUri:        v.GetString("mongodb.uri"),
+		DBName:       v.GetString("mongodb.database"),
+		GRPCServer:   v.GetString("grpcserver"),
+		ClientPort:   v.GetString("clientport"),
+		ClientServer: v.GetString("clientserver"),
 	}
 
 	return config, nil

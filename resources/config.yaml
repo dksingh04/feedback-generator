@@ -4,6 +4,9 @@ mongodb:
   uri: "mongodb://localhost:27017"
 
 grpcport: "9090"
-server: "localhost:9090"
+grpcserver: "localhost"
+
+clientport: "8080"
+clientserver: "localhost"
 
 
