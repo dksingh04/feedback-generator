@@ -2,6 +2,9 @@
 
 ## Development is in progress
 
+### Build and embed static resources
+statik -src=./public -include=*.jpg,*.txt,*.html,*.css,*.js
+
 ### Build server
 make build
 

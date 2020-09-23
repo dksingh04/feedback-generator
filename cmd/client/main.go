@@ -44,8 +44,8 @@ func init() {
 	if err != nil {
 		logrus.Fatal("Unable to get Working Directory.. ", err)
 	}
-	fmt.Println(pwd)
-	tpl = template.Must(template.ParseGlob(pwd + "/cmd/client/ui/static/templates/*.html"))
+	//fmt.Println(pwd)
+	tpl = template.Must(template.ParseGlob(pwd + "/public/templates/*.html"))
 }
 
 func main() {
@@ -70,9 +70,9 @@ func main() {
 	//router := httprouter.New()
 	mux := http.NewServeMux()
 	//router.Ha
-	mux.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/cmd/client/ui/static/css/")))))
-	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/cmd/client/ui/static/js/")))))
-	imgServer := http.FileServer(http.Dir(filepath.FromSlash(pwd + "/cmd/client/ui/static/img/")))
+	mux.Handle("/css/", http.StripPrefix("/css/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/public/css/")))))
+	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/public/js/")))))
+	imgServer := http.FileServer(http.Dir(filepath.FromSlash(pwd + "/public/img/")))
 	mux.Handle("/img/", http.StripPrefix("/img/", imgServer))
 	mux.HandleFunc("/", index)
 
@@ -87,7 +87,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		//It is POST method
 		var t *f.Feedback
 		json.NewDecoder(r.Body).Decode(&t)
-		fmt.Println(t.TechSkills[0].Topics[0])
+		//fmt.Println(t.TechSkills[0].Topics[0])
 		fRes, err := generateFeedbackResponseFromRequest(t)
 		if err != nil {
 			logrus.WithFields(logrus.Fields{
