@@ -1,6 +1,10 @@
 package config
 
 import (
+	"fmt"
+	"os"
+
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
@@ -20,12 +24,18 @@ type Config struct {
 
 // ReadConfig will read the configuration from properties file
 func ReadConfig() (*Config, error) {
+	pwd, err := os.Getwd()
+	if err != nil {
+		logrus.Fatal("Unable to get Working Directory.. ", err)
+	}
+	fmt.Println(pwd)
+
 	v := viper.New()
 	v.SetConfigName("config")
 	v.SetConfigType("yaml")
-	v.AddConfigPath("./internal/config")
+	v.AddConfigPath(pwd + "/internal/config")
 	v.AutomaticEnv()
-	err := v.ReadInConfig()
+	err = v.ReadInConfig()
 
 	if err != nil {
 		return nil, err

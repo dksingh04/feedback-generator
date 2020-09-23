@@ -36,9 +36,9 @@ var feedbackMapping = map[string]string{
 	"total_experience":         "total %v years of experience and have worked on following tech-stacks (%v)",
 	"current_experience":       "and since last %v years he is working on following tech-stacks (%v)",
 	"Proxy":                    "using proxy and someone else was giving Interview on behalf of him, since it was proxy hence I have done some basic discussion on each skill sets.",
-	"Whiteboard_explained":     "in white-boarding session, candidate has performed very well, explained the solution with proper diagram and flow.",
-	"Whiteboard_partial":       "in white-boarding session, candidate was partially able to explain the solution",
-	"Whiteboard_not_explained": "in white-boarding session, candidate was unable perform better, not able to solve the given problem at all",
+	"Whiteboard_explained":     "In white-boarding session, candidate has performed very well, explained the solution with proper diagram and flow.",
+	"Whiteboard_partial":       "In white-boarding session, candidate was partially able to explain the solution",
+	"Whiteboard_not_explained": "In white-boarding session, candidate was unable perform better, not able to solve the given problem at all",
 	"Coding_Standards":         "well-versed with coding standards and followed the same while writing the code",
 	"s-1":                      "Candidate needs substantial development and have to work a lot, candidate was missing fundamentals",
 	"e-1":                      "Candidate has no experience in this skill and was unable to demonstrate his experience",
@@ -53,12 +53,12 @@ var feedbackMapping = map[string]string{
 	"HaveTheoretical":          "theoretically clear and explained the concepts of '%v' very well",
 	"NoTheoretical":            "not clear with theoretical part of '%v', unable to explain '%v'",
 	"InDepthUnderstanding":     "deep understanding of the technology and explained all the concepts discussed (for e.g. %s)",
-	"AbleToExplain":            "theoretically clear and explained the concepts of '%v' very well with example",
+	"AbleToExplain":            "theoretically clear and explained the concepts of '%v' very well and with example",
 	"PartiallyExplained":       "theoretically fine and partially able to explain the concepts, missing in-depth understanding of the concept, this will cause challenge in debugging/troubleshooting the problems",
 	"Hands-On":                 "hands-on with the skill",
-	"Hands-On-Topic":           "hands-on in this topic (%v)",
+	"Hands-On-Topic":           "hands-on with the topic (%v)",
 	"ScenarioQuestioned":       "I have covered some scenarion questions",
-	"ScenarioExplained":        "explained the scenario question (%v) very well and how to solve the problem in such cases",
+	"ScenarioExplained":        "explained the scenario question (for e.g. %v) very well and how to solve the problem in such cases",
 	"ScenarioNotExplained":     "unable to explain the scenario question (%v), seems to me not much hands-on in this skill",
 }
 
@@ -164,25 +164,10 @@ func (fs *feedbackServiceServer) GenerateFeedbackForRequest(ctx context.Context,
 	if err := fResult.Decode(&fRes); err != nil {
 		logrus.Errorf("Unable to read document for request id: %v", req.FeedbackReq.Id)
 	}
-	var summaryText = req.SummaryNote + "\n\n"
+	req.FeedbackReq = &fRes
+	gfRes, err := generateFeedbackReport(req)
 
-	if fRes.IsProxy {
-		summaryText += fmt.Sprintf("%s %s %s", candidate, was, feedbackMapping["Proxy"])
-	} else {
-		//generate summaryText
-		summaryText = generateSummaryText(summaryText, &fRes)
-		// Build skill feedback
-		sFeedbackSlice := generateSkillFeedback(&fRes)
-
-		gfRes.SkillFeedback = sFeedbackSlice
-	}
-
-	gfRes.SummaryText = summaryText
-	gfRes.StatusCode = http.StatusOK
-
-	gfRes.Message = "Generated feedback successfully"
-
-	return gfRes, nil
+	return gfRes, err
 }
 
 func (fs *feedbackServiceServer) Delete(ctx context.Context, req *v1.DeleteFeedbackRequest) (*v1.DeleteFeedbackResponse, error) {
@@ -208,17 +193,49 @@ func (fs *feedbackServiceServer) GenerateFeedbackFromFormData(ctx context.Contex
 	gfRes := &v1.GeneratedFeedbackResponse{}
 	gfRes.Api = "v1"
 
-	fRes := req.FeedbackReq
+	fReq := req.FeedbackReq
 
-	var summaryText = req.SummaryNote + "\n\n"
+	var summaryText string
+	if req.SummaryNote != "" {
+		summaryText = req.SummaryNote + "\n\n"
+	}
 
-	if fRes.IsProxy {
+	if fReq.IsProxy {
 		summaryText += fmt.Sprintf("%s %s %s", candidate, was, feedbackMapping["Proxy"])
 	} else {
 		//generate summaryText
-		summaryText = generateSummaryText(summaryText, fRes)
+		summaryText = generateSummaryText(summaryText, fReq)
 		// Build skill feedback
-		sFeedbackSlice := generateSkillFeedback(fRes)
+		sFeedbackSlice := generateSkillFeedback(fReq)
+
+		gfRes.SkillFeedback = sFeedbackSlice
+	}
+
+	gfRes.SummaryText = summaryText
+	gfRes.StatusCode = http.StatusOK
+
+	gfRes.Message = "Generated feedback successfully"
+
+	return gfRes, nil
+}
+
+func generateFeedbackReport(req *v1.GenerateFeedbackRequest) (*v1.GeneratedFeedbackResponse, error) {
+	gfRes := &v1.GeneratedFeedbackResponse{}
+	gfRes.Api = "v1"
+	fReq := req.FeedbackReq
+
+	var summaryText string
+	if req.SummaryNote != "" {
+		summaryText = req.SummaryNote + "\n\n"
+	}
+
+	if fReq.IsProxy {
+		summaryText += fmt.Sprintf("%s %s %s", candidate, was, feedbackMapping["Proxy"])
+	} else {
+		//generate summaryText
+		summaryText = generateSummaryText(summaryText, fReq)
+		// Build skill feedback
+		sFeedbackSlice := generateSkillFeedback(fReq)
 
 		gfRes.SkillFeedback = sFeedbackSlice
 	}
@@ -265,13 +282,13 @@ func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
 
 	}
 	// Build feedback when Whiteboarding is required
-	if fRes.IsWhiteboardingRequired && fRes.IsWhiteboardQuestionAsked {
-		if fRes.WhiteboardExplained {
-			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_explained"])
+	if fRes.IsWhiteboardingRequired {
+		if fRes.IsWhiteboardDone {
+			summaryText += fmt.Sprintf("%s.\n", feedbackMapping["Whiteboard_explained"])
 		} else if fRes.WhiteboardPartial {
-			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_explained"])
+			summaryText += fmt.Sprintf("%s.\n", feedbackMapping["Whiteboard_partial"])
 		} else {
-			summaryText += fmt.Sprintf("%s %s.\n", candidate, feedbackMapping["Whiteboard_not_explained"])
+			summaryText += fmt.Sprintf("%s.\n", feedbackMapping["Whiteboard_not_explained"])
 		}
 
 		if fRes.AnyWhiteboardComment != "" {
@@ -312,23 +329,16 @@ func generateSkillFeedback(fRes *v1.Feedback) []*v1.SkillFeedback {
 					if topic.IsAbleToExplainScenario {
 						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["ScenarioExplained"], topic.WhatSceanrioQuestion))
 					} else {
-						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["ScenarioNotExplained"], topic.WhatSceanrioQuestion))
+						sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, was, fmt.Sprintf(feedbackMapping["ScenarioNotExplained"], topic.WhatSceanrioQuestion))
 					}
-				}
-				if topic.InDepthUnderstanding {
-					sFeedback.FeedbackText += fmt.Sprintf("%s %s %s. \n", candidate, has, fmt.Sprintf(feedbackMapping["InDepthUnderstanding"], topic.TheoryQuestion))
-				}
-
-				if topic.IsHandsOn {
+				} else if topic.IsHandsOn {
 					sFeedback.FeedbackText += fmt.Sprintf("%s %s %s.\n", candidate, is, fmt.Sprintf(feedbackMapping["Hands-On-Topic"], topic.TopicName))
 				}
 			}
 
 			if tech.InDepthUnderstanding {
 				sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s. \n", candidate, has, fmt.Sprintf(feedbackMapping["InDepthUnderstanding"], tech.QuestionsAsked))
-			}
-
-			if tech.IsHandsOn {
+			} else if tech.IsHandsOn {
 				sFeedback.FeedbackText += fmt.Sprintf("\n%s %s %s.\n", candidate, is, feedbackMapping["Hands-On"])
 			}
 		}

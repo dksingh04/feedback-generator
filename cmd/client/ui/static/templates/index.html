@@ -14,7 +14,7 @@
             <div class="py-5 text-center">
                 <img class="d-block mx-auto mb-4" src="img/feedback3.jpg" alt="" width="300" height="150">
                 <h2>Feedback Generator</h2>
-                <p class="lead">Tool can be used for generating feedback for all the discussion being done. You have to answer to just few questions and get nice formatted feedback generated. Isn't that Awesome. Development of this tool is in progress.</p>
+                <p class="lead">Tool can be used for generating feedback for all the discussion being done. Just answer to few questions instead of writing whole report and get nice formatted feedback generated :). Isn't that Awesome? Development of this tool is in progress.</p>
             </div>
             
             <div class="row">
@@ -75,19 +75,19 @@
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="is_code_compiled" id="is-code-compiled">
-                            <label class="custom-control-label" for="is-code-compiled">Candidate written compilable code?</label>
+                            <label class="custom-control-label" for="is-code-compiled">Written compilable code?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="is_able_to_write_pseudoCode" id="pseudo-code">
-                            <label class="custom-control-label" for="pseudo-code">Was able to write pseudo code?</label>
+                            <label class="custom-control-label" for="pseudo-code">Able to write pseudo code?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="is_algo_efficient" id="algo-efficient">
-                            <label class="custom-control-label" for="algo-efficient">Was code Algorithimically correct and efficient?</label>
+                            <label class="custom-control-label" for="algo-efficient">Code Algorithimically correct and efficient?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="followed_coding_standards" id="followed_coding_standards">
-                            <label class="custom-control-label" for="followed_coding_standards">Does Candidate followed coding standards?</label>
+                            <label class="custom-control-label" for="followed_coding_standards">Followed coding standards?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="is_whiteboarding_required" id="is-whiteboard-required">
@@ -95,7 +95,11 @@
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="is_whiteboard_done" id="is_whiteboard_done">
-                            <label class="custom-control-label" for="is_whiteboard_done">Candidate was able to solve Whiteboard problem?</label>
+                            <label class="custom-control-label" for="is_whiteboard_done">Able to solve Whiteboard problem?</label>
+                        </div>
+                        <div class="custom-control custom-checkbox">
+                            <input type="checkbox" class="custom-control-input" name="whiteboard_partial" id="whiteboard_partial">
+                            <label class="custom-control-label" for="whiteboard_partial">Partially able to solve Whiteboard problem?</label>
                         </div>
                         <hr class="mb-4">
                         <div class="mb-3">
@@ -163,7 +167,7 @@
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="in_depth_understanding" id="in_depth_understanding">
-                            <label class="custom-control-label" for="in_depth_understanding">Does Candidate have in-depth understanding of the skill?</label>
+                            <label class="custom-control-label" for="in_depth_understanding">Have in-depth understanding of the skill?</label>
                         </div>
                         
                         <hr class="mb-4">
@@ -185,30 +189,30 @@
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="isAbleToExaplain" id="is_able_to_exaplain_topic">
-                            <label class="custom-control-label" for="is_able_to_exaplain_topic">Does Candidate explained the topic very well?</label>
+                            <label class="custom-control-label" for="is_able_to_exaplain_topic">Explained the topic very well?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="partiallyExplained" id="partially_explained_topic">
-                            <label class="custom-control-label" for="partially_explained_topic">Was able to explain the topic partially?</label>
+                            <label class="custom-control-label" for="partially_explained_topic">Able to explain the topic partially?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="isHandsOn" id="is_hands_on_topic">
-                            <label class="custom-control-label" for="is_hands_on_topic">Is Candidate hands-on with the topic?</label>
+                            <label class="custom-control-label" for="is_hands_on_topic">Hands-on with the topic?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="isScenarioCovered" id="is_scenario_covered">
-                            <label class="custom-control-label" for="is_scenario_covered">Any Scenario/Practical question being asked?</label>
+                            <label class="custom-control-label" for="is_scenario_covered">Scenario/Practical question being asked?</label>
                         </div>
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario" id="is_able_to_explain_scenario">
-                            <label class="custom-control-label" for="is_able_to_explain_scenario">Does candidate explained Scenario/Practical question being asked?</label>
+                            <label class="custom-control-label" for="is_able_to_explain_scenario">Explained Scenario/Practical question being asked?</label>
                         </div>
                         
                         <hr class="mb-4">
                         <div class="mb-3">
                             <label for="scenario-question-name">What Scenario Question asked</label>
                             <div class="input-group">
-                                <input type="text" class="form-control" name="whatSceanrioQuestion" id="scenario-question-name" placeholder="e.g. What OOPs concepts used in the project and why" required="">
+                                <input type="text" class="form-control" name="whatSceanrioQuestion" id="scenario-question-name" placeholder="e.g. What OOPs concepts used in the project and why">
                             </div>  
                         </div>
                         <hr class="mb-4">
@@ -221,8 +225,8 @@
                         <textarea class="form-control" name="feedback-summary-report" id="feedback-summary-report" rows="5" placeholder="Generated Summary Report will come here" value=""></textarea>
                     </div>
                     <div class="mb-3">
-                        <label for="discussion-feedback-report">Discussion Feedback Report</label>
-                        <textarea class="form-control" name="discussion-feedback-report" id="discussion-feedback-report" rows="5" placeholder="Generated Report based on the discussion" value=""></textarea>
+                        <label for="skill-feedback-report" id="skill-feedback-report-label">Discussion Feedback Report</label>
+                        <textarea class="form-control" name="skill-feedback-report" id="skill-feedback-report" rows="5" placeholder="Generated Report based on the discussion" value=""></textarea>
                     </div>
                     </div>
                 
@@ -241,6 +245,7 @@
             // send ajax
             event.preventDefault(); //prevent default action 
             var array = jQuery("#generate-feedback").serializeArray();
+            
             var jsonData = {
                 "tech_skills": []
             };
@@ -255,16 +260,16 @@
             skill.skill_name = $("#skill-name").val();
             skill.skill_rating = parseInt($("#skill-rating").val());
             skill.experience_rating = parseInt($("#experience-rating").val());
-            skill.is_hands_on = $("#is_hands_on_with_skill").val() == "on"?true:false;
-            skill.in_depth_understanding = $("#in_depth_understanding").val() == "on"?true:false;
+            skill.is_hands_on = $("#is_hands_on_with_skill").prop("checked");
+            skill.in_depth_understanding = $("#in_depth_understanding").prop("checked");
             skill.questions_asked = $("#questions_asked").val();
 
             topic.topic_name = $("#topic-name").val();
-            topic.is_able_to_exaplain = $("#is_able_to_exaplain_topic").val() == "on"?true:false;
-            topic.partially_explained = $("#partially_explained_topic").val() == "on"?true:false;
-            topic.is_hands_on = $("#is_hands_on_topic").val() == "on"?true:false;
-            topic.is_scenario_covered = $("#is_scenario_covered").val() == "on"?true:false;
-            topic.is_able_to_explain_scenario = $("#is_able_to_explain_scenario").val() == "on"?true:false;
+            topic.is_able_to_exaplain = $("#is_able_to_exaplain_topic").prop("checked");
+            topic.partially_explained = $("#partially_explained_topic").prop("checked");
+            topic.is_hands_on = $("#is_hands_on_topic").prop("checked");
+            topic.is_scenario_covered = $("#is_scenario_covered").prop("checked");
+            topic.is_able_to_explain_scenario = $("#is_able_to_explain_scenario").prop("checked");
             topic.what_sceanrio_question = $("#scenario-question-name").val();
             topic.theory_question = $("#theory_question").val();
 
@@ -279,7 +284,8 @@
                 data : JSON.stringify(jsonData), // post data || get data
                 success : function(result) {
                     $("#feedback-summary-report").val(result.summary_text)
-                    $("#discussion-feedback-report").val(result.skill_feedback[0].feedback_text)                   
+                    $("#skill-feedback-report-label").html(result.skill_feedback[0].skill+" Report") 
+                    $("#skill-feedback-report").val(result.skill_feedback[0].feedback_text)                   
                 },
                 error: function(xhr, resp, text) {
                     console.log(xhr, resp, text);

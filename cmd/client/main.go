@@ -64,7 +64,7 @@ func main() {
 
 	cc = initializeClientConfig(logger, conn)
 	//Building cli tool for creating and generating feedback response
-	buildAndRunCliApp(logger, cc)
+	//buildAndRunCliApp(logger, cc)
 
 	//Build HTTP Router and Run client server
 	//router := httprouter.New()
@@ -114,7 +114,7 @@ func generateFeedbackResponseFromRequest(feedback *f.Feedback) (*f.GeneratedFeed
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	fmt.Println(feedback)
-	fReq := &f.GenerateFeedbackRequest{Api: "v1", FeedbackReq: feedback, SummaryNote: "Summary Notes"}
+	fReq := &f.GenerateFeedbackRequest{Api: "v1", FeedbackReq: feedback, SummaryNote: ""}
 	fRes, err := cc.client.GenerateFeedbackFromFormData(ctx, fReq)
 	fmt.Println("Professional Summary:")
 	fmt.Println("")
@@ -232,7 +232,7 @@ func (cc *clientConfig) deleteFeedbackRequest(requestID string) {
 	fmt.Println(err)
 }
 
-func (cc *clientConfig) generateFeedbackResponse(requestID string) {
+func (cc *clientConfig) generateFeedbackResponseFromReqID(requestID string) {
 	fmt.Println(requestID)
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -351,7 +351,7 @@ func buildAndRunCliApp(logger *logrus.Logger, cc *clientConfig) {
 			Usage: "Generate feedback for the created request",
 			Action: func(c *cli.Context) error {
 				requestID := c.String("gen")
-				cc.generateFeedbackResponse(requestID)
+				cc.generateFeedbackResponseFromReqID(requestID)
 				return nil
 			},
 		},
