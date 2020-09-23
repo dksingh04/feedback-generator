@@ -1,6 +1,6 @@
 <p align="center">
   <a href="" rel="noopener">
- <img width=200px height=200px src="./public/img/feedback3.jpg" alt="Project logo"></a>
+ <img width=200px height=200px src="./public/img/feedback4.jpeg" alt="Project logo"></a>
 </p>
 
 <h3 align="center">Interview Feedback Generator</h3>
