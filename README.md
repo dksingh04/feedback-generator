@@ -30,7 +30,7 @@
 
 ## 🧐 About <a name = "about"></a>
 
-Project will help you to generate formatted feedback by answering questions, it will save around 10-15 mins of writing feedback of Interviews taken.
+Project will help you to generate formatted feedback by answering few sample questions, it will save around 10-15 mins of your precious time.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
