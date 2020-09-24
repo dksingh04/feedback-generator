@@ -14,36 +14,27 @@
 
 ---
 
-<p align="center"> Project can be used for generating formatted feedback for any technical discussion you do, simply by answering few questions.
+<p align="center"> Generating formatted feedback for any technical discussion by simply answering few questions.
     <br> 
 </p>
 
-## 📝 Table of Contents
-
-- [About](#about)
-- [Deployment](#deployment)
-- [Usage](#usage)
-- [Built Using](#built_using)
-- [Authors](#authors)
-
 ## 🧐 About <a name = "about"></a>
 
-Project will help you to generate formatted feedback by answering few sample questions, it will save around 10-15 mins of your precious time.
+Project will help you to generate formatted feedback by answering few sample questions, it will save around 5-10 mins of your precious time.
 
 ## 🏁 Getting Started <a name = "getting_started"></a>
 
-These instructions will get you a copy of the project up and running on your local machine for development and testing purposes. See [deployment](#deployment) for notes on how to deploy the project on a live system.
+TODO add notes
 
 ### Prerequisites
 
-In order to run the code locally, minimal requirement is to have Go installed, download and follow the instruction for [installation](https://golang.org/doc/install). Using google protobuf for grpc API's which expose Creat, Read, Delete and Generat report stored in MongoDB.
+In order to run the code locally, minimal requirement is to have Go (higher than 1.11, and go module for dependencies) installed, download and follow the instruction for [installation](https://golang.org/doc/install). Using google protobuf for grpc API's which expose Creat, Read, Delete and Generat report stored in MongoDB.
 
-There are two flavor of this project, you can use simple UI and answer few questions which will generate formatted report without interacting to DB, but if you want to use the project fully you can go with MongoDB, which requires [MongoDB](https://docs.mongodb.com/manual/installation/) to be setup locally. You can change DB configuration from resources/config.yaml file.
+There are two flavor of this project, you can use simple UI and answer few questions which will generate formatted report without interacting to DB, but if you want to use the project fully you can go with MongoDB, which requires [MongoDB](https://docs.mongodb.com/manual/installation/) to be setup locally or you can change DB configuration from resources/config.yaml file wherever your mongodb is setup.
 
-You can interact to these API, by writing your own client and UI. Use protoc to generate client stub in whatever language you prefer and utilize the API's.
+You can interact to these API, by writing your own client and UI. Use **protoc** to generate client stub in whatever language you prefer and utilize the API's.
 
 ### Installing
-
 
 
 ## 🔧 Running the tests <a name = "tests"></a>
@@ -62,7 +53,7 @@ Give an example
 
 ## By default it builds the binary for Mac/Linux
 
-TODO update make to build the binary for other OS.
+TODO update to add entry in make file to build binaries for other OS.
 
 ### Build server
 make build
