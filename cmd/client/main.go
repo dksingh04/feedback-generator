@@ -53,9 +53,11 @@ func main() {
 			"Error":    err,
 		}).Fatal("Unable to create the default logger configuration!")
 	}
+	// Read config information
+	conf, _ := config.ReadConfig()
 
 	//Connect to grpc server
-	conn := connectToGRPCServer(logger)
+	conn := connectToGRPCServer(logger, conf)
 	defer conn.Close()
 
 	cc = initializeClientConfig(logger, conn)
@@ -68,7 +70,7 @@ func main() {
 	mux.Handle("/img/", http.StripPrefix("/img/", imgServer))
 	mux.HandleFunc("/", index)
 	logger.Info("Started client server..")
-	log.Fatal(http.ListenAndServe(":8080", mux))
+	log.Fatal(http.ListenAndServe(":"+conf.ClientPort, mux))
 
 }
 func index(w http.ResponseWriter, r *http.Request) {
@@ -121,8 +123,8 @@ func generateFeedbackResponseFromRequest(feedback *f.Feedback) (*f.GeneratedFeed
 	return fRes, err
 }
 
-func connectToGRPCServer(logger *logrus.Logger) *grpc.ClientConn {
-	conn, err := grpc.Dial("localhost:9090", grpc.WithInsecure())
+func connectToGRPCServer(logger *logrus.Logger, conf *config.Config) *grpc.ClientConn {
+	conn, err := grpc.Dial(conf.GRPCServer+":"+conf.GRPCPort, grpc.WithInsecure())
 	if err != nil {
 		logger.WithFields(logrus.Fields{
 			"server": "localhost:9090",

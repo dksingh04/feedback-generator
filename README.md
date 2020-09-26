@@ -34,20 +34,6 @@ There are two flavor of this project, you can use simple UI and answer few quest
 
 You can interact to these API, by writing your own client and UI. Use **protoc** to generate client stub in whatever language you prefer and utilize the API's.
 
-### Installing
-
-
-## 🔧 Running the tests <a name = "tests"></a>
-
-TODO in progress
-
-### Break down into end to end tests
-
-TODO in progress
-
-```
-Give an example
-```
 
 ## 🎈 Usage
 

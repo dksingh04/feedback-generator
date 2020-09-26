@@ -15,7 +15,12 @@ GOBUILD=$(GOCMD) build
 GOCLEAN=$(GOCMD) clean
 GOTEST=$(GOCMD) test
 GOGET=$(GOCMD) get
-BINARY_UNIX=$(BINNAME)_unix
+BINARY_UNIX=$(BINNAME)-unix
+BINARY_WS=$(BINNAME)-win
+BINARY_CLIENT_WS=$(BINNAME_CLIENT)-win
+BINARY_CLIENT_UNIX=$(BINNAME_CLIENT)-unix
+BINARY_CLIENT_CLI_WS=$(BINNAME_CLIENT_CLI)-win
+BINARY_CLIENT_CLI_UNIX=$(BINNAME_CLIENT_CLI)-unix
 
 # go option
 PKG        := ./...
@@ -42,9 +47,10 @@ all: test build run
 build:
 		$(GOBUILD) -o $(BINDIR)/$(BINNAME) -v $(FBSERVER)
 build-client:
-		$(GOBUILD) -o $(BINDIR)/$(BINNAME_CLIENT) -v $(FBCLIENT)
+		$(GOBUILD) -o $(BINDIR)/$(FBCLIENT) -v $(FBCLIENT)
+		cp -R public resources $(BINDIR)
 build-cli-client:
-		$(GOBUILD) -o $(BINDIR)/$(BINNAME_CLIENT_CLI) -v $(FBCLICLIENT)	
+		$(GOBUILD) -o $(BINDIR)/$(BINNAME_CLIENT_CLI) -v $(FBCLICLIENT)
 test: 
 		$(GOTEST) -v ./...
 clean: 
@@ -60,7 +66,19 @@ run-client:
 
 # Cross compilation
 build-linux:
-		CGO_ENABLED=0 GO111MODULE=on GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINARY_UNIX) -v $(FBSERVER)
+		CGO_ENABLED=0 GO111MODULE=on GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINDIR)/$(BINARY_UNIX) -v $(FBSERVER)
+build-linux-client:
+		CGO_ENABLED=0 GO111MODULE=on GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINDIR)/$(BINARY_CLIENT_UNIX) -v $(FBCLIENT)
+build-linux-cli-client:
+		CGO_ENABLED=0 GO111MODULE=on GOOS=linux GOARCH=amd64 $(GOBUILD) -o $(BINDIR)/$(BINARY_CLIENT_CLI_UNIX) -v $(FBCLIENT)
+build-windows:
+		CGO_ENABLED=0 GO111MODULE=on GOOS=windows GOARCH=amd64 $(GOBUILD) -o $(BINDIR)/$(BINARY_WS).exe -v $(FBSERVER)
+build-win-client:
+		CGO_ENABLED=0 GO111MODULE=on GOOS=windows GOARCH=amd64 $(GOBUILD) -o $(BINDIR)/$(BINARY_CLIENT_WS).exe -v $(FBCLIENT)
+build-win-cli-client:
+		CGO_ENABLED=0 GO111MODULE=on GOOS=windows GOARCH=amd64 $(GOBUILD) -o $(BINDIR)/$(BINARY_CLIENT_CLI_WS).exe -v $(FBCLIENT)
+
+
 # Creating Docker build and run the code in docker container
 docker-build:
 		docker build -t feedback-generator .
