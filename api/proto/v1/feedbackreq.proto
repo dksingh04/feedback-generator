@@ -34,6 +34,7 @@ message Feedback {
     string tools_technologies_worked_on = 25;
     int32 current_tech_stack_experience = 26;
     string current_tools_technologies_worked_on = 27;
+    string domain_name = 28;
 }
 
 message TechSkill {

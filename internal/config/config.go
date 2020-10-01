@@ -2,6 +2,7 @@ package config
 
 import (
 	"os"
+	"path/filepath"
 	"sync"
 
 	"github.com/sirupsen/logrus"
@@ -39,7 +40,7 @@ func ReadConfig() (*Config, error) {
 		v = viper.New()
 		v.SetConfigName("config")
 		v.SetConfigType("yaml")
-		v.AddConfigPath(pwd + "/resources")
+		v.AddConfigPath(filepath.FromSlash(pwd + "/resources"))
 		v.AutomaticEnv()
 		err = v.ReadInConfig()
 

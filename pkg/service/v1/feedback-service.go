@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"go.mongodb.org/mongo-driver/bson"
 
@@ -28,18 +29,18 @@ type feedbackServiceServer struct {
 //Initializing feedback mapping comments, this information we can have in DB, currently having it in code.
 //TODO move this mapping in DB or dynamic configuration, so that wording and sentence can be changed dynamically.
 var feedbackMapping = map[string]string{
-	"CodeCompiled":             "written compilable and executable code",
+	"CodeCompiled":             "write execuatable code",
 	"PseudoCode":               "able to write pseudo code",
-	"AlgoEfficient":            "it was efficient candidate has considered space and Time complexity, while implementing the solution",
+	"AlgoEfficient":            "it was efficient, considered space and Time complexity while implementing the solution",
 	"NotEfficient":             "it was not efficient, didn't considered or think of Time and space complexity",
-	"total_experience":         "total %v years of experience and have worked on following tech-stacks (%v)",
-	"current_experience":       "and since last %v years he is working on following tech-stacks (%v)",
+	"total_experience":         "total %v years of experience and have worked on (%v)",
+	"current_experience":       "and since last %v years he is working on (%v)",
 	"Proxy":                    "using proxy and someone else was giving Interview on behalf of him, since it was proxy hence I have done some basic discussion on each skill sets.",
-	"Whiteboard_explained":     "In white-boarding session, candidate has performed very well, explained the solution with proper diagram and flow.",
-	"Whiteboard_partial":       "In white-boarding session, candidate was partially able to explain the solution",
+	"Whiteboard_explained":     "In white-boarding session candidate has performed very well, explained the solution with proper diagram and flow.",
+	"Whiteboard_partial":       "In white-boarding session candidate was partially able to explain the solution",
 	"Whiteboard_not_explained": "In white-boarding session, candidate was unable perform better, not able to solve the given problem at all",
 	"Coding_Standards":         "well-versed with coding standards and followed the same while writing the code",
-	"s-1":                      "Candidate needs substantial development and have to work a lot, candidate was missing fundamentals",
+	"s-1":                      "Candidate needs substantial development and have to work a lot, missing fundamental concepts",
 	"e-1":                      "Candidate has no experience in this skill and was unable to demonstrate his experience",
 	"s-2":                      "Candidate needs some training to bring competency up to standards, have some basic understanding but missing some other fundamentals",
 	"e-2":                      "Candidate has limited experience, close supervision will be needed for him",
@@ -51,14 +52,15 @@ var feedbackMapping = map[string]string{
 	"e-5":                      "Candidate has extensive experience and can work independently",
 	"HaveTheoretical":          "theoretically clear and explained the concepts of '%v' very well",
 	"NoTheoretical":            "not clear with theoretical part of '%v', unable to explain '%v'",
-	"InDepthUnderstanding":     "deep understanding of the technology and explained all the concepts discussed (for e.g. %s)",
+	"InDepthUnderstanding":     "in-depth understanding of the technology and was able to explain the concepts discussed (for e.g. %s)",
 	"AbleToExplain":            "theoretically clear and explained the concepts of '%v' very well and with example",
-	"PartiallyExplained":       "theoretically fine and partially able to explain the concepts, missing in-depth understanding of the concept, this will cause challenge in debugging/troubleshooting the problems",
+	"PartiallyExplained":       "partially able to explain the concepts, does not have in-depth understanding, this will cause challenge in debugging/troubleshooting the problems",
 	"Hands-On":                 "hands-on with the skill",
 	"Hands-On-Topic":           "hands-on with the topic (%v)",
 	"ScenarioQuestioned":       "I have covered some scenarion questions",
 	"ScenarioExplained":        "explained the scenario question (for e.g. %v) very well and how to solve the problem in such cases",
 	"ScenarioNotExplained":     "unable to explain the scenario question (%v), seems to me not much hands-on in this skill",
+	"domain_exp":               "experience in (%v) domain%v",
 }
 
 var candidate = "Candidate"
@@ -200,33 +202,7 @@ func (fs *feedbackServiceServer) Delete(ctx context.Context, req *v1.DeleteFeedb
 }
 func (fs *feedbackServiceServer) GenerateFeedbackFromFormData(ctx context.Context, req *v1.GenerateFeedbackRequest) (*v1.GeneratedFeedbackResponse, error) {
 
-	gfRes := &v1.GeneratedFeedbackResponse{}
-	gfRes.Api = "v1"
-
-	fReq := req.FeedbackReq
-
-	var summaryText string
-	if req.SummaryNote != "" {
-		summaryText = req.SummaryNote + "\n\n"
-	}
-
-	if fReq.IsProxy {
-		summaryText += fmt.Sprintf("%s %s %s", candidate, was, feedbackMapping["Proxy"])
-	} else {
-		//generate summaryText
-		summaryText = generateSummaryText(summaryText, fReq)
-		// Build skill feedback
-		sFeedbackSlice := generateSkillFeedback(fReq)
-
-		gfRes.SkillFeedback = sFeedbackSlice
-	}
-
-	gfRes.SummaryText = summaryText
-	gfRes.StatusCode = http.StatusOK
-
-	gfRes.Message = "Generated feedback successfully"
-
-	return gfRes, nil
+	return generateFeedbackReport(req)
 }
 
 func generateFeedbackReport(req *v1.GenerateFeedbackRequest) (*v1.GeneratedFeedbackResponse, error) {
@@ -274,7 +250,7 @@ func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
 		if fRes.IsCodeCompiled && fRes.IsAlgoEfficient {
 			summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["AlgoEfficient"])
 		} else if fRes.IsCodeCompiled && !fRes.IsAlgoEfficient {
-			summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["NotEfficient"])
+			summaryText += fmt.Sprintf("%s %s %s but %s.\n", candidate, has, feedbackMapping["CodeCompiled"], feedbackMapping["NotEfficient"])
 		} else {
 			if fRes.IsAbleToWritePseudoCode && fRes.IsAlgoEfficient {
 				summaryText += fmt.Sprintf("%s %s %s and %s.\n", candidate, was, feedbackMapping["PseudoCode"], feedbackMapping["AlgoEfficient"])
@@ -306,9 +282,20 @@ func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
 		}
 	}
 
+	if fRes.DomainName != "" {
+		fmt.Println("Domain Name: " + fRes.DomainName)
+		if len(strings.Split(fRes.DomainName, ",")) > 1 {
+			summaryText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["domain_exp"], fRes.DomainName, "s"))
+		} else {
+			summaryText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["domain_exp"], fRes.DomainName))
+		}
+
+	}
+
 	if fRes.MyComments != "" {
 		summaryText += fmt.Sprintf("%s\n", fRes.MyComments)
 	}
+
 	return summaryText
 }
 

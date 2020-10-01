@@ -47,7 +47,7 @@ all: test build run
 build:
 		$(GOBUILD) -o $(BINDIR)/$(BINNAME) -v $(FBSERVER)
 build-client:
-		$(GOBUILD) -o $(BINDIR)/$(FBCLIENT) -v $(FBCLIENT)
+		$(GOBUILD) -o $(BINDIR)/$(BINNAME_CLIENT) -v $(FBCLIENT)
 		cp -R public resources $(BINDIR)
 build-cli-client:
 		$(GOBUILD) -o $(BINDIR)/$(BINNAME_CLIENT_CLI) -v $(FBCLICLIENT)

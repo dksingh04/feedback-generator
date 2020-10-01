@@ -63,6 +63,12 @@
                                 </div>
                             </div>  
                         </div>
+                        <div class="mb-3">
+                            <label for="domain_name">Domain worked on, please enter the names comma (,) seperated</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control" name="domain_name" id="domain_name" placeholder="Domain">
+                            </div>  
+                        </div>
                         <hr class="mb-4">
                         <div class="custom-control custom-checkbox">
                             <input type="checkbox" class="custom-control-input" name="is_proxy" id="is-proxy">
@@ -111,110 +117,154 @@
                             <textarea class="form-control" name="any_whiteboard_comment" id="any_whiteboard_comment" rows="3" placeholder="Any other whiteboard test comment?" value=""></textarea>
                         </div>
                         <hr class="mb-4">
-                        <h4 class="mb-3">Skills</h4>
-                        <hr class="mb-4">
                         <div class="mb-3">
-                            <label for="skill-name">Skill Name</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="skill_name" id="skill-name" placeholder="Java" required="">
-                                <div class="invalid-feedback" style="width: 100%;">
-                                    Skill Name name is required.
-                                </div>
-                            </div>  
+                            <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="right" title="Add Skill">
+                                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                </svg>
+                            </button>
                         </div>
-                        <hr class="mb-4">
-                        <h4 class="mb-3">Ratings (1-5)</h4>
-                        <div class="row">
-                            <div class="col-md-5 mb-3">
-                                <label for="country">Skill Rating</label>
-                                <select class="custom-select d-block w-100" name="skill_rating" id="skill-rating" required="">
-                                    <option value="">Choose...</option>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Please select a valid skill rating.
+                        <div class="accordion" id="skills">
+                            <div class="card">
+                                <div class="card-header" id="skill-heading">
+                                     <h4 class="mb-3">
+                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#skillcollapse" aria-expanded="true" aria-controls="skillcollapse">
+                                            Skills covered in the discussion
+                                        </button>
+                                    </h4>
+                                </div>
+                                
+                                <div id="skillcollapse" class="collapse show" aria-labelledby="skill-heading" data-parent="#skills">
+                                    <div class="card-body">
+                                        <div class="mb-3">
+                                            <label for="skill-name">Skill Name</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="skill_name" id="skill-name" placeholder="Java" required="">
+                                                <div class="invalid-feedback" style="width: 100%;">
+                                                    Skill Name name is required.
+                                                </div>
+                                            </div>  
+                                        </div>
+                                        <hr class="mb-4">
+                                        <h4 class="mb-3">Ratings (1-5)</h4>
+                                        <div class="row">
+                                            <div class="col-md-5 mb-3">
+                                                <label for="country">Skill Rating</label>
+                                                <select class="custom-select d-block w-100" name="skill_rating" id="skill-rating" required="">
+                                                    <option value="">Choose...</option>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                    <option>3</option>
+                                                    <option>4</option>
+                                                    <option>5</option>
+                                                </select>
+                                                <div class="invalid-feedback">
+                                                    Please select a valid skill rating.
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 mb-3">
+                                                <label for="state">Experience Rating</label>
+                                                <select class="custom-select d-block w-100" name="experience_rating" id="experience-rating" required="">
+                                                    <option value="">Choose...</option>
+                                                    <option>1</option>
+                                                    <option>2</option>
+                                                    <option>3</option>
+                                                    <option>4</option>
+                                                    <option>5</option>
+                                                </select>
+                                                <div class="invalid-feedback">
+                                                    Please provide a valid Experience rating.
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="topic-name">Question Asked in the skill, Please enter the topics comma separated</label>
+                                            <div class="input-group">
+                                                <input type="text" class="form-control" name="questions_asked" id="questions_asked" placeholder="e.g. OOPs, Multithreading, Exception Handling, Collection classes etc.">
+                                            </div>  
+                                        </div>
+                                        <hr class="mb-4">
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="is_hands_on" id="is_hands_on_with_skill">
+                                            <label class="custom-control-label" for="is_hands_on_with_skill">Is Candidate hands-on with the skill?</label>
+                                        </div>
+                                        <div class="custom-control custom-checkbox">
+                                            <input type="checkbox" class="custom-control-input" name="in_depth_understanding" id="in_depth_understanding">
+                                            <label class="custom-control-label" for="in_depth_understanding">Have in-depth understanding of the skill?</label>
+                                        </div>
+                                        <hr class="mb-4">
+                                        <div class="mb-3">
+                                            <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="right" title="Add Topic">
+                                                <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                                    <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                                                    <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="accordion" id="topics">
+                                            <div class="card">
+                                                <div class="card-header" id="topic-heading">
+                                                    <h4 class="mb-3">
+                                                        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#topiccollapse" aria-expanded="true" aria-controls="topiccollapse">
+                                                            Topics covered in the skill
+                                                        </button>
+                                                    </h4>
+                                                </div>
+                                                <div id="topiccollapse" class="collapse show" aria-labelledby="topic-heading" data-parent="#topics">
+                                                    <div class="card-body">
+                                                        <div class="mb-3">
+                                                            <label for="topic-name">Topic Name</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" name="topic_name" id="topic-name" placeholder="e.g. OOPs" required="">
+                                                                <div class="invalid-feedback" style="width: 100%;">
+                                                                    Topic Name is required.
+                                                                </div>
+                                                            </div>  
+                                                        </div>
+                                                        <div class="mb-3">
+                                                            <label for="topic-name">What kind of Question being asked? Please enter them comma separated</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" name="theory_question" id="theory_question" placeholder="e.g. Polymorphism, Enacpasulation, Inheritance, Design Principles and class Designing etc.">
+                                                            </div>  
+                                                        </div>
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" name="isAbleToExaplain" id="is_able_to_exaplain_topic">
+                                                            <label class="custom-control-label" for="is_able_to_exaplain_topic">Explained the topic very well?</label>
+                                                        </div>
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" name="partiallyExplained" id="partially_explained_topic">
+                                                            <label class="custom-control-label" for="partially_explained_topic">Able to explain the topic partially?</label>
+                                                        </div>
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" name="isHandsOn" id="is_hands_on_topic">
+                                                            <label class="custom-control-label" for="is_hands_on_topic">Hands-on with the topic?</label>
+                                                        </div>
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" name="isScenarioCovered" id="is_scenario_covered">
+                                                            <label class="custom-control-label" for="is_scenario_covered">Scenario/Practical question being asked?</label>
+                                                        </div>
+                                                        <div class="custom-control custom-checkbox">
+                                                            <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario" id="is_able_to_explain_scenario">
+                                                            <label class="custom-control-label" for="is_able_to_explain_scenario">Explained Scenario/Practical question being asked?</label>
+                                                        </div>
+                                                        
+                                                        <hr class="mb-4">
+                                                        <div class="mb-3">
+                                                            <label for="scenario-question-name">What Scenario Question asked</label>
+                                                            <div class="input-group">
+                                                                <input type="text" class="form-control" name="whatSceanrioQuestion" id="scenario-question-name" placeholder="e.g. What OOPs concepts used in the project and why">
+                                                            </div>  
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr class="mb-4">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-md-4 mb-3">
-                                <label for="state">Experience Rating</label>
-                                <select class="custom-select d-block w-100" name="experience_rating" id="experience-rating" required="">
-                                    <option value="">Choose...</option>
-                                    <option>1</option>
-                                    <option>2</option>
-                                    <option>3</option>
-                                    <option>4</option>
-                                    <option>5</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Please provide a valid Experience rating.
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-3">
-                            <label for="topic-name">Question Asked in the skill, Please enter the topics comma separated</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="questions_asked" id="questions_asked" placeholder="e.g. OOPs, Multithreading, Exception Handling, Collection classes etc.">
-                            </div>  
-                        </div>
-                        <hr class="mb-4">
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="is_hands_on" id="is_hands_on_with_skill">
-                            <label class="custom-control-label" for="is_hands_on_with_skill">Is Candidate hands-on with the skill?</label>
-                        </div>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="in_depth_understanding" id="in_depth_understanding">
-                            <label class="custom-control-label" for="in_depth_understanding">Have in-depth understanding of the skill?</label>
-                        </div>
-                        
-                        <hr class="mb-4">
-                        <h4 class="mb-3">Topics covered under the skill</h4>
-                        <div class="mb-3">
-                            <label for="topic-name">Topic Name</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="topic_name" id="topic-name" placeholder="e.g. OOPs" required="">
-                                <div class="invalid-feedback" style="width: 100%;">
-                                    Topic Name is required.
-                                </div>
-                            </div>  
-                        </div>
-                        <div class="mb-3">
-                            <label for="topic-name">What kind of Question being asked? Please enter them comma separated</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="theory_question" id="theory_question" placeholder="e.g. Polymorphism, Enacpasulation, Inheritance, Design Principles and class Designing etc.">
-                            </div>  
-                        </div>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="isAbleToExaplain" id="is_able_to_exaplain_topic">
-                            <label class="custom-control-label" for="is_able_to_exaplain_topic">Explained the topic very well?</label>
-                        </div>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="partiallyExplained" id="partially_explained_topic">
-                            <label class="custom-control-label" for="partially_explained_topic">Able to explain the topic partially?</label>
-                        </div>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="isHandsOn" id="is_hands_on_topic">
-                            <label class="custom-control-label" for="is_hands_on_topic">Hands-on with the topic?</label>
-                        </div>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="isScenarioCovered" id="is_scenario_covered">
-                            <label class="custom-control-label" for="is_scenario_covered">Scenario/Practical question being asked?</label>
-                        </div>
-                        <div class="custom-control custom-checkbox">
-                            <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario" id="is_able_to_explain_scenario">
-                            <label class="custom-control-label" for="is_able_to_explain_scenario">Explained Scenario/Practical question being asked?</label>
-                        </div>
-                        
-                        <hr class="mb-4">
-                        <div class="mb-3">
-                            <label for="scenario-question-name">What Scenario Question asked</label>
-                            <div class="input-group">
-                                <input type="text" class="form-control" name="whatSceanrioQuestion" id="scenario-question-name" placeholder="e.g. What OOPs concepts used in the project and why">
-                            </div>  
-                        </div>
+                        </div>                        
                         <hr class="mb-4">
                         <button class="btn btn-primary btn-lg btn-block" id="submit-button" type="submit">Generate Feedback Report</button>
                     </form>
