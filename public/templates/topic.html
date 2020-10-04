@@ -1,0 +1,64 @@
+{{range $j, $tp := .Topics}}
+    <div class="accordion" id="topics{{$.SkillIndex}}{{$j}}">
+        <div class="card">
+            <div class="card-header" id="topic-heading">
+                <h4 class="mb-3">
+                    <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#topiccollapse{{$.SkillIndex}}{{$j}}" aria-expanded="true" aria-controls="topiccollapse{{$.SkillIndex}}{{$j}}">
+                        Topics {{$j}} - {{$tp.TopicName}}
+                    </button>
+                </h4>
+            </div>
+            <div id="topiccollapse{{$.SkillIndex}}{{$j}}" class="collapse show" aria-labelledby="topic-heading{{$.SkillIndex}}{{$j}}" data-parent="#topics{{$.SkillIndex}}{{$j}}">
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="topic-name">Topic Name</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="topic_name{{$.SkillIndex}}{{$j}}" id="topic-name{{$.SkillIndex}}{{$j}}" placeholder="e.g. OOPs" required="" value={{$tp.TopicName}}>
+                            <div class="invalid-feedback" style="width: 100%;">
+                                Topic Name is required.
+                            </div>
+                        </div>  
+                    </div>
+                    <div class="mb-3">
+                        <label for="topic-name">What kind of Question being asked? Please enter them comma separated</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="theory_question{{$.SkillIndex}}{{$j}}" id="theory_question{{$.SkillIndex}}{{$j}}" placeholder="e.g. Polymorphism, Enacpasulation, Inheritance, Design Principles and class Designing etc." value={{$tp.TheoryQuestion}}>
+                        </div>  
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="isAbleToExaplain{{$.SkillIndex}}{{$j}}" id="is_able_to_exaplain_topic{{$.SkillIndex}}{{$j}}" {{if $tp.IsAbleToExaplain}} checked {{end}}>
+                        <label class="custom-control-label" for="is_able_to_exaplain_topic{{$.SkillIndex}}{{$j}}">Explained the topic very well?</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="partiallyExplained{{$.SkillIndex}}{{$j}}" id="partially_explained_topic{{$.SkillIndex}}{{$j}}" {{if $tp.PartiallyExplained}} checked {{end}}>
+                        <label class="custom-control-label" for="partially_explained_topic{{$.SkillIndex}}{{$j}}">Able to explain the topic partially?</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="isHandsOn{{$.SkillIndex}}{{$j}}" id="is_hands_on_topic{{$.SkillIndex}}{{$j}}" {{if $tp.IsHandsOn}} checked {{end}}>
+                        <label class="custom-control-label" for="is_hands_on_topic{{$.SkillIndex}}{{$j}}">Hands-on with the topic?</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="isScenarioCovered{{$.SkillIndex}}{{$j}}" id="is_scenario_covered{{$.SkillIndex}}{{$j}}" {{if $tp.IsScenarioCovered}} checked {{end}}>
+                        <label class="custom-control-label" for="is_scenario_covered{{$.SkillIndex}}{{$j}}">Scenario/Practical question being asked?</label>
+                    </div>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario{{$.SkillIndex}}{{$j}}" id="is_able_to_explain_scenario{{$.SkillIndex}}{{$j}}" {{if $tp.IsAbleToExplainScenario}} checked {{end}}>
+                        <label class="custom-control-label" for="is_able_to_explain_scenario{{$.SkillIndex}}{{$j}}">Explained Scenario/Practical question being asked?</label>
+                    </div>
+                    
+                    <hr class="mb-4">
+                    <div class="mb-3">
+                        <label for="scenario-question-name">What Scenario Question asked</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" name="whatSceanrioQuestion{{$.SkillIndex}}{{$j}}" id="scenario-question-name{{$.SkillIndex}}{{$j}}" placeholder="e.g. What OOPs concepts used in the project and why" value={{$tp.WhatSceanrioQuestion}}>
+                        </div>  
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{{end}}
+
+<script>
+    var topiclen = {{len .Topics}}
+</script>

@@ -1,0 +1,155 @@
+{{range $i, $t := .TechSkills}}
+<div class="accordion" id="skill{{$i}}">
+    <div class="card">
+        <div class="card-header" id="skill-heading{{$i}}">
+            <h4 class="mb-3">
+                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#skillcollapse{{$i}}" aria-expanded="true" aria-controls="skillcollapse{{$i}}" id="skillcollapse-btn{{$i}}">
+                    Skill {{$i}} - {{$t.SkillName}}
+                    <!--svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrows-expand" fill="currentColor" xmlns="http://www.w3.org/2000/svg" id="skillcollapse-svg-expnd{{$i}}">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zM7.646.146a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 1.707V5.5a.5.5 0 0 1-1 0V1.707L6.354 2.854a.5.5 0 1 1-.708-.708l2-2zM8 10a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 0 1 .708-.708L7.5 14.293V10.5A.5.5 0 0 1 8 10z"/>
+                    </svg>
+                    <svg width="1.5em" height="1.5em" viewBox="0 0 16 16" class="bi bi-arrows-collapse" fill="currentColor" xmlns="http://www.w3.org/2000/svg" id="skillcollapse-svg-collapse{{$i}}">
+                        <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h13a.5.5 0 0 1 0 1h-13A.5.5 0 0 1 1 8zm7-8a.5.5 0 0 1 .5.5v3.793l1.146-1.147a.5.5 0 0 1 .708.708l-2 2a.5.5 0 0 1-.708 0l-2-2a.5.5 0 1 1 .708-.708L7.5 4.293V.5A.5.5 0 0 1 8 0zm-.5 11.707l-1.146 1.147a.5.5 0 0 1-.708-.708l2-2a.5.5 0 0 1 .708 0l2 2a.5.5 0 0 1-.708.708L8.5 11.707V15.5a.5.5 0 0 1-1 0v-3.793z"/>
+                    </svg-->
+                </button>
+            </h4>
+        </div>
+        
+        <div id="skillcollapse{{$i}}" class="collapse show" aria-labelledby="skill-heading{{$i}}" data-parent="#skill{{$i}}">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="skill-name">Skill Name</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="skill_name{{$i}}" id="skill-name{{$i}}" placeholder="Java" required="" value={{$t.SkillName}}>
+                        <div class="invalid-feedback" style="width: 100%;">
+                            Skill Name name is required.
+                        </div>
+                    </div>  
+                </div>
+                <hr class="mb-4">
+                <h4 class="mb-3">Ratings (1-5)</h4>
+                <div class="row">
+                    <div class="col-md-5 mb-3">
+                        <label for="country">Skill Rating</label>
+                        <select class="custom-select d-block w-100" name="skill_rating{{$i}}" id="skill-rating{{$i}}" required="" value={{$t.SkillRating}}>
+                            <option value="">Choose...</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please select a valid skill rating.
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <label for="state">Experience Rating</label>
+                        <select class="custom-select d-block w-100" name="experience_rating{{$i}}" id="experience-rating{{$i}}" required="" value={{$t.ExperienceRating}}>
+                            <option value="">Choose...</option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            Please provide a valid Experience rating.
+                        </div>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="topic-name">Question Asked in the skill, Please enter the topics comma separated</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="questions_asked{{$i}}" id="questions_asked{{$i}}" placeholder="e.g. OOPs, Multithreading, Exception Handling, Collection classes etc." value={{$t.QuestionsAsked}}>
+                    </div>  
+                </div>
+                <hr class="mb-4">
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="is_hands_on{{$i}}" id="is_hands_on_with_skill{{$i}}" {{if $t.IsHandsOn}} checked {{end}}>
+                    <label class="custom-control-label" for="is_hands_on_with_skill{{$i}}">Is Candidate hands-on with the skill?</label>
+                </div>
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" name="in_depth_understanding{{$i}}" id="in_depth_understanding{{$i}}" {{if $t.InDepthUnderstanding}} checked {{end}}>
+                    <label class="custom-control-label" for="in_depth_understanding{{$i}}">Have in-depth understanding of the skill?</label>
+                </div>
+                <hr class="mb-4">
+                <div class="mb-3">
+                    <button type="button" class="btn btn-outline-dark" data-toggle="tooltip" data-placement="right" title="Add Topic" onclick="addTopic('{{$i}}')" id="add-topic{{$i}}">
+                        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-plus-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd" d="M14 1H2a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z"/>
+                            <path fill-rule="evenodd" d="M8 4a.5.5 0 0 1 .5.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3A.5.5 0 0 1 8 4z"/>
+                        </svg>
+                    </button>
+                </div>
+                <div id="topic-content{{$i}}">
+                {{range $j, $tp := $t.Topics}}
+                <div class="accordion" id="topics{{$i}}{{$j}}">
+                    <div class="card">
+                        <div class="card-header" id="topic-heading">
+                            <h4 class="mb-3">
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#topiccollapse{{$i}}{{$j}}" aria-expanded="true" aria-controls="topiccollapse{{$i}}{{$j}}">
+                                    Topics {{$j}} - {{$tp.TopicName}}
+                                </button>
+                            </h4>
+                        </div>
+                        <div id="topiccollapse{{$i}}{{$j}}" class="collapse show" aria-labelledby="topic-heading{{$i}}{{$j}}" data-parent="#topics{{$i}}{{$j}}">
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <label for="topic-name{{$i}}{{$j}}">Topic Name</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="topic_name{{$i}}{{$j}}" id="topic-name{{$i}}{{$j}}" placeholder="e.g. OOPs" required="" value={{$tp.TopicName}}>
+                                        <div class="invalid-feedback" style="width: 100%;">
+                                            Topic Name is required.
+                                        </div>
+                                    </div>  
+                                </div>
+                                <div class="mb-3">
+                                    <label for="theory_question{{$i}}{{$j}}">What kind of Question being asked? Please enter them comma separated</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="theory_question{{$i}}{{$j}}" id="theory_question{{$i}}{{$j}}" placeholder="e.g. Polymorphism, Enacpasulation, Inheritance, Design Principles and class Designing etc." value={{$tp.TheoryQuestion}}>
+                                    </div>  
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="isAbleToExaplain{{$i}}{{$j}}" id="is_able_to_exaplain_topic{{$i}}{{$j}}" {{if $tp.IsAbleToExaplain}} checked {{end}}>
+                                    <label class="custom-control-label" for="is_able_to_exaplain_topic{{$i}}{{$j}}">Explained the topic very well?</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="partiallyExplained{{$i}}{{$j}}" id="partially_explained_topic{{$i}}{{$j}}" {{if $tp.PartiallyExplained}} checked {{end}}>
+                                    <label class="custom-control-label" for="partially_explained_topic{{$i}}{{$j}}">Able to explain the topic partially?</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="isHandsOn{{$i}}{{$j}}" id="is_hands_on_topic{{$i}}{{$j}}" {{if $tp.IsHandsOn}} checked {{end}}>
+                                    <label class="custom-control-label" for="is_hands_on_topic{{$i}}{{$j}}">Hands-on with the topic?</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="isScenarioCovered{{$i}}{{$j}}" id="is_scenario_covered{{$i}}{{$j}}" {{if $tp.IsScenarioCovered}} checked {{end}}>
+                                    <label class="custom-control-label" for="is_scenario_covered{{$i}}{{$j}}">Scenario/Practical question being asked?</label>
+                                </div>
+                                <div class="custom-control custom-checkbox">
+                                    <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario{{$i}}{{$j}}" id="is_able_to_explain_scenario{{$i}}{{$j}}" {{if $tp.IsAbleToExplainScenario}} checked {{end}}>
+                                    <label class="custom-control-label" for="is_able_to_explain_scenario{{$i}}{{$j}}">Explained Scenario/Practical question being asked?</label>
+                                </div>
+                                
+                                <hr class="mb-4">
+                                <div class="mb-3">
+                                    <label for="scenario-question-name">What Scenario Question asked</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" name="whatSceanrioQuestion{{$i}}{{$j}}" id="scenario-question-name{{$i}}{{$j}}" placeholder="e.g. What OOPs concepts used in the project and why" value={{$tp.WhatSceanrioQuestion}}>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {{end}}
+            </div>
+            <hr class="mb-4">
+        </div>
+    </div>
+</div>
+{{end}}
+
+<script>
+    var skill_len = {{len .TechSkills}}
+</script>

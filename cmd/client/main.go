@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -33,6 +34,13 @@ type clientConfig struct {
 }
 
 var pwd = ""
+var fb = &f.Feedback{TechSkills: []*f.TechSkill{&f.TechSkill{Topics: []*f.Topic{&f.Topic{}}}}}
+
+//TopicData for adding topic dynamically
+type TopicData struct {
+	SkillIndex int
+	Topics     []*f.Topic
+}
 
 func init() {
 	var err error
@@ -40,8 +48,7 @@ func init() {
 	if err != nil {
 		logrus.Fatal("Unable to get Working Directory.. ", err)
 	}
-	//fmt.Println(pwd)
-	tpl = template.Must(template.ParseGlob(pwd + "/public/templates/*.html"))
+	tpl = template.Must(template.New("feedback-template").ParseGlob(pwd + "/public/templates/*.html"))
 }
 
 func main() {
@@ -68,6 +75,8 @@ func main() {
 	mux.Handle("/js/", http.StripPrefix("/js/", http.FileServer(http.Dir(filepath.FromSlash(pwd+"/public/js/")))))
 	imgServer := http.FileServer(http.Dir(filepath.FromSlash(pwd + "/public/img/")))
 	mux.Handle("/img/", http.StripPrefix("/img/", imgServer))
+	mux.HandleFunc("/addskill/", addSkill)
+	mux.HandleFunc("/addtopic/", addTopic)
 	mux.HandleFunc("/", index)
 	logger.Info("Started client server..")
 	log.Fatal(http.ListenAndServe(":"+conf.ClientPort, mux))
@@ -76,7 +85,8 @@ func main() {
 func index(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/html")
 	if r.Method == http.MethodGet {
-		tpl.ExecuteTemplate(w, "index.html", nil)
+		fmt.Println("Called Index Get method!!")
+		tpl.ExecuteTemplate(w, "index.html", fb)
 	} else {
 		//It is POST method
 		var t *f.Feedback
@@ -90,26 +100,45 @@ func index(w http.ResponseWriter, r *http.Request) {
 				"Error":   err,
 			}).Fatalf("Unable to process the message error: %v", err)
 		}
-		fReport, err := json.Marshal(fRes)
-		if err != nil {
-			logrus.WithFields(logrus.Fields{
-				"status":  http.StatusInternalServerError,
-				"message": "Unable to convert response to Json ",
-				"Error":   err,
-			}).Fatalf("Unable to convert response to Json error: %v", err)
-		}
+		//fReport, err := json.Marshal(fRes)
+
 		//Write the report to response writer
-		w.Write(fReport)
+		//w.Write(fReport)
+		tpl.ExecuteTemplate(w, "report.html", fRes)
 		//fmt.Println(string(fReport))
 	}
 
 }
+
+func addSkill(w http.ResponseWriter, r *http.Request) {
+	var techSkill = &f.TechSkill{Topics: []*f.Topic{&f.Topic{}}}
+	fb.TechSkills = append(fb.TechSkills, techSkill)
+	fmt.Println(len(fb.TechSkills))
+	tpl.ExecuteTemplate(w, "skill.html", fb)
+}
+
+func addTopic(w http.ResponseWriter, r *http.Request) {
+	var topic = &f.Topic{}
+	index, err := strconv.Atoi(r.FormValue("index"))
+	fmt.Println(index)
+	if err != nil {
+		logrus.WithFields(logrus.Fields{
+			"status": 500,
+			"Error":  err,
+		}).Fatal("Parameters is missing!")
+	}
+	fb.TechSkills[index].Topics = append(fb.TechSkills[index].Topics, topic)
+	t := &TopicData{SkillIndex: index, Topics: fb.TechSkills[index].Topics}
+	fmt.Println(len(fb.TechSkills[index].Topics))
+	tpl.ExecuteTemplate(w, "topic.html", t)
+}
+
 func generateFeedbackResponseFromRequest(feedback *f.Feedback) (*f.GeneratedFeedbackResponse, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	fReq := &f.GenerateFeedbackRequest{Api: "v1", FeedbackReq: feedback, SummaryNote: ""}
 	fRes, err := cc.client.GenerateFeedbackFromFormData(ctx, fReq)
-	fmt.Println("Professional Summary:")
+	/*fmt.Println("Professional Summary:")
 	fmt.Println("")
 	fmt.Printf(fRes.SummaryText)
 	fmt.Println("")
@@ -119,7 +148,8 @@ func generateFeedbackResponseFromRequest(feedback *f.Feedback) (*f.GeneratedFeed
 	fmt.Println("")
 	fmt.Println("Error:")
 	fmt.Println(err)
-
+	*/
+	fb = feedback
 	return fRes, err
 }
 

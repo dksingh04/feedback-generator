@@ -60,7 +60,7 @@ var feedbackMapping = map[string]string{
 	"ScenarioQuestioned":       "I have covered some scenarion questions",
 	"ScenarioExplained":        "explained the scenario question (for e.g. %v) very well and how to solve the problem in such cases",
 	"ScenarioNotExplained":     "unable to explain the scenario question (%v), seems to me not much hands-on in this skill",
-	"domain_exp":               "experience in (%v) domain%v",
+	"domain_exp":               "experience in (%v) domain%s",
 }
 
 var candidate = "Candidate"
@@ -287,7 +287,7 @@ func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
 		if len(strings.Split(fRes.DomainName, ",")) > 1 {
 			summaryText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["domain_exp"], fRes.DomainName, "s"))
 		} else {
-			summaryText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["domain_exp"], fRes.DomainName))
+			summaryText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["domain_exp"], fRes.DomainName, ""))
 		}
 
 	}

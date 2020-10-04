@@ -1,0 +1,10 @@
+<div class="mb-3">
+    <label for="feedback-summary-report">Professional Summary</label>
+    <textarea class="form-control" name="feedback-summary-report" id="feedback-summary-report" rows="5" placeholder="Generated Summary Report will come here">{{.SummaryText}}</textarea>
+</div>
+{{range $i, $s := .SkillFeedback}}
+    <div class="mb-3">
+        <label for="skill-feedback-report" id="skill-feedback-report-label">{{$s.Skill}}</label>
+        <textarea class="form-control" name="skill-feedback-report" id="skill-feedback-report" rows="5" placeholder="Generated Report based on the discussion">{{$s.FeedbackText}}</textarea>
+    </div>
+{{end}}
