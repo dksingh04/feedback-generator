@@ -150,9 +150,9 @@ func addTopic(w http.ResponseWriter, r *http.Request) {
 	}
 
 	fb = t
-	fb.TechSkills[0].Topics = append(fb.TechSkills[0].Topics, topic)
-	tData := &TopicData{SkillIndex: 0, Topics: fb.TechSkills[0].Topics}
-	fmt.Println(len(fb.TechSkills[0].Topics))
+	fb.TechSkills[index].Topics = append(fb.TechSkills[index].Topics, topic)
+	tData := &TopicData{SkillIndex: index, Topics: fb.TechSkills[index].Topics}
+	fmt.Println(len(fb.TechSkills[index].Topics))
 	tpl.ExecuteTemplate(w, "topic.html", tData)
 }
 
