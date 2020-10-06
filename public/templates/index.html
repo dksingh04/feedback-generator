@@ -148,7 +148,7 @@
                                             <div class="mb-3">
                                                 <label for="skill-name">Skill Name</label>
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" name="skill_name{{$i}}" id="skill-name{{$i}}" placeholder="Java" required="" value={{$t.SkillName}}>
+                                                    <input type="text" class="form-control" name="skill_name" id="skill-name{{$i}}" placeholder="Java" required="" value={{$t.SkillName}}>
                                                     <div class="invalid-feedback" style="width: 100%;">
                                                         Skill Name name is required.
                                                     </div>
@@ -159,7 +159,7 @@
                                             <div class="row">
                                                 <div class="col-md-5 mb-3">
                                                     <label for="country">Skill Rating</label>
-                                                    <select class="custom-select d-block w-100" name="skill_rating{{$i}}" id="skill-rating{{$i}}" required="" value={{$t.SkillRating}}>
+                                                    <select class="custom-select d-block w-100" name="skill_rating" id="skill-rating{{$i}}" required="" value={{$t.SkillRating}}>
                                                         <option value="">Choose...</option>
                                                         <option>1</option>
                                                         <option>2</option>
@@ -173,7 +173,7 @@
                                                 </div>
                                                 <div class="col-md-4 mb-3">
                                                     <label for="state">Experience Rating</label>
-                                                    <select class="custom-select d-block w-100" name="experience_rating{{$i}}" id="experience-rating{{$i}}" required="" value={{$t.ExperienceRating}}>
+                                                    <select class="custom-select d-block w-100" name="experience_rating" id="experience-rating{{$i}}" required="" value={{$t.ExperienceRating}}>
                                                         <option value="">Choose...</option>
                                                         <option>1</option>
                                                         <option>2</option>
@@ -189,16 +189,16 @@
                                             <div class="mb-3">
                                                 <label for="topic-name">Question Asked in the skill, Please enter the topics comma separated</label>
                                                 <div class="input-group">
-                                                    <input type="text" class="form-control" name="questions_asked{{$i}}" id="questions_asked{{$i}}" placeholder="e.g. OOPs, Multithreading, Exception Handling, Collection classes etc." value={{$t.QuestionsAsked}}>
+                                                    <input type="text" class="form-control" name="questions_asked" id="questions_asked{{$i}}" placeholder="e.g. OOPs, Multithreading, Exception Handling, Collection classes etc." value={{$t.QuestionsAsked}}>
                                                 </div>  
                                             </div>
                                             <hr class="mb-4">
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" name="is_hands_on{{$i}}" id="is_hands_on_with_skill{{$i}}" {{if $t.IsHandsOn}} checked {{end}}>
+                                                <input type="checkbox" class="custom-control-input" name="is_hands_on" id="is_hands_on_with_skill{{$i}}" {{if $t.IsHandsOn}} checked {{end}}>
                                                 <label class="custom-control-label" for="is_hands_on_with_skill{{$i}}">Is Candidate hands-on with the skill?</label>
                                             </div>
                                             <div class="custom-control custom-checkbox">
-                                                <input type="checkbox" class="custom-control-input" name="in_depth_understanding{{$i}}" id="in_depth_understanding{{$i}}" {{if $t.InDepthUnderstanding}} checked {{end}}>
+                                                <input type="checkbox" class="custom-control-input" name="in_depth_understanding" id="in_depth_understanding{{$i}}" {{if $t.InDepthUnderstanding}} checked {{end}}>
                                                 <label class="custom-control-label" for="in_depth_understanding{{$i}}">Have in-depth understanding of the skill?</label>
                                             </div>
                                             <hr class="mb-4">
@@ -226,7 +226,7 @@
                                                             <div class="mb-3">
                                                                 <label for="topic-name">Topic Name</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" name="topic_name{{$i}}{{$j}}" id="topic-name{{$i}}{{$j}}" placeholder="e.g. OOPs" required="" value={{$tp.TopicName}}>
+                                                                    <input type="text" class="form-control" name="topic_name" id="topic-name{{$i}}{{$j}}" placeholder="e.g. OOPs" required="" value={{$tp.TopicName}}>
                                                                     <div class="invalid-feedback" style="width: 100%;">
                                                                         Topic Name is required.
                                                                     </div>
@@ -235,27 +235,27 @@
                                                             <div class="mb-3">
                                                                 <label for="topic-name">What kind of Question being asked? Please enter them comma separated</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" name="theory_question{{$i}}{{$j}}" id="theory_question{{$i}}{{$j}}" placeholder="e.g. Polymorphism, Enacpasulation, Inheritance, Design Principles and class Designing etc." value={{$tp.TheoryQuestion}}>
+                                                                    <input type="text" class="form-control" name="theory_question" id="theory_question{{$i}}{{$j}}" placeholder="e.g. Polymorphism, Enacpasulation, Inheritance, Design Principles and class Designing etc." value={{$tp.TheoryQuestion}}>
                                                                 </div>  
                                                             </div>
                                                             <div class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input" name="isAbleToExaplain{{$i}}{{$j}}" id="is_able_to_exaplain_topic{{$i}}{{$j}}" {{if $tp.IsAbleToExaplain}} checked {{end}}>
+                                                                <input type="checkbox" class="custom-control-input" name="isAbleToExaplain" id="is_able_to_exaplain_topic{{$i}}{{$j}}" {{if $tp.IsAbleToExaplain}} checked {{end}}>
                                                                 <label class="custom-control-label" for="is_able_to_exaplain_topic{{$i}}{{$j}}">Explained the topic very well?</label>
                                                             </div>
                                                             <div class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input" name="partiallyExplained{{$i}}{{$j}}" id="partially_explained_topic{{$i}}{{$j}}" {{if $tp.PartiallyExplained}} checked {{end}}>
+                                                                <input type="checkbox" class="custom-control-input" name="partiallyExplained" id="partially_explained_topic{{$i}}{{$j}}" {{if $tp.PartiallyExplained}} checked {{end}}>
                                                                 <label class="custom-control-label" for="partially_explained_topic{{$i}}{{$j}}">Able to explain the topic partially?</label>
                                                             </div>
                                                             <div class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input" name="isHandsOn{{$i}}{{$j}}" id="is_hands_on_topic{{$i}}{{$j}}" {{if $tp.IsHandsOn}} checked {{end}}>
+                                                                <input type="checkbox" class="custom-control-input" name="isHandsOn" id="is_hands_on_topic{{$i}}{{$j}}" {{if $tp.IsHandsOn}} checked {{end}}>
                                                                 <label class="custom-control-label" for="is_hands_on_topic{{$i}}{{$j}}">Hands-on with the topic?</label>
                                                             </div>
                                                             <div class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input" name="isScenarioCovered{{$i}}{{$j}}" id="is_scenario_covered{{$i}}{{$j}}" {{if $tp.IsScenarioCovered}} checked {{end}}>
+                                                                <input type="checkbox" class="custom-control-input" name="isScenarioCovered" id="is_scenario_covered{{$i}}{{$j}}" {{if $tp.IsScenarioCovered}} checked {{end}}>
                                                                 <label class="custom-control-label" for="is_scenario_covered{{$i}}{{$j}}">Scenario/Practical question being asked?</label>
                                                             </div>
                                                             <div class="custom-control custom-checkbox">
-                                                                <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario{{$i}}{{$j}}" id="is_able_to_explain_scenario{{$i}}{{$j}}" {{if $tp.IsAbleToExplainScenario}} checked {{end}}>
+                                                                <input type="checkbox" class="custom-control-input" name="isAbleToExplainScenario" id="is_able_to_explain_scenario{{$i}}{{$j}}" {{if $tp.IsAbleToExplainScenario}} checked {{end}}>
                                                                 <label class="custom-control-label" for="is_able_to_explain_scenario{{$i}}{{$j}}">Explained Scenario/Practical question being asked?</label>
                                                             </div>
                                                             
@@ -263,7 +263,7 @@
                                                             <div class="mb-3">
                                                                 <label for="scenario-question-name">What Scenario Question asked</label>
                                                                 <div class="input-group">
-                                                                    <input type="text" class="form-control" name="whatSceanrioQuestion{{$i}}{{$j}}" id="scenario-question-name{{$i}}{{$j}}" placeholder="e.g. What OOPs concepts used in the project and why" value={{$tp.WhatSceanrioQuestion}}>
+                                                                    <input type="text" class="form-control" name="whatSceanrioQuestion" id="scenario-question-name{{$i}}{{$j}}" placeholder="e.g. What OOPs concepts used in the project and why" value={{$tp.WhatSceanrioQuestion}}>
                                                                 </div>  
                                                             </div>
                                                         </div>
@@ -305,10 +305,11 @@
         skill_topic_map.st_map.push(stObject);
     
         function addSkill(){
-            //console.log("AddSkill")
+            var jsonData = prepareDataForSubmition();
             $.ajax({
                 url: '/addskill/', // url where to submit the request
-                type : "GET", // type of action POST || GET
+                type : "POST", // type of action POST || GET
+                data : JSON.stringify(jsonData),
                 success : function(result) {
                     $("#skill-contents").html(result);
                     for (var i=0; i < skill_len-1; i++){
@@ -328,9 +329,11 @@
         }
         
         function addTopic(index){
+            var jsonData = prepareDataForSubmition();
             $.ajax({
                 url: '/addtopic/?index='+index, // url where to submit the request
-                type : "GET", // type of action POST || GET
+                type : "POST", // type of action POST || GET
+                data : JSON.stringify(jsonData),
                 success : function(result) {
                     $("#topic-content"+index).html(result);
                     skill_topic_map.st_map[index].topicNo = topiclen;
@@ -344,21 +347,35 @@
         $("#submit-button").on('click', function(event){
             // send ajax
             event.preventDefault(); //prevent default action 
-            var array = jQuery("#generate-feedback").serializeArray();
+            var jsonData = prepareDataForSubmition();
+
+            $.ajax({
+                url: '/', // url where to submit the request
+                type : "POST", // type of action POST || GET
+                //dataType : 'json', // data type
+                data : JSON.stringify(jsonData), // post data || get data
+                success : function(result) {
+                    $("#generated-report").html(result)                
+                },
+                error: function(xhr, resp, text) {
+                    console.log(xhr, resp, text);
+                }
+            })
+             
+        });
+
+        function prepareDataForSubmition(){
+             var array = jQuery("#generate-feedback").serializeArray();
             
             var jsonData = {
                 "tech_skills": []
             };
-
-            
             
             jQuery.each(array, function() {
                 jsonData[this.name] = this.value==="on"?true:isNaN(this.value)?this.value:parseInt(this.value) || '';
             });
             //build skill and topic object
             for(var i = 0; i < skill_topic_map.st_map.length; i++){ 
-                console.log(skill_topic_map.st_map[i].skillNo)
-                console.log(skill_topic_map.st_map[i].topicNo) 
                 var skill = {"topics":[]};
                 skill.skill_name = $("#skill-name"+i).val();
                 skill.skill_rating = parseInt($("#skill-rating"+i).val());
@@ -382,22 +399,8 @@
                 } 
                 jsonData.tech_skills.push(skill);
             }
-            console.log(jsonData);
-
-            $.ajax({
-                url: '/', // url where to submit the request
-                type : "POST", // type of action POST || GET
-                //dataType : 'json', // data type
-                data : JSON.stringify(jsonData), // post data || get data
-                success : function(result) {
-                    $("#generated-report").html(result)                
-                },
-                error: function(xhr, resp, text) {
-                    console.log(xhr, resp, text);
-                }
-            })
-             
-        });  
+            return jsonData;
+        }
 
     </script>
 </html>

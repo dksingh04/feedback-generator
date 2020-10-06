@@ -283,7 +283,6 @@ func generateSummaryText(summaryText string, fRes *v1.Feedback) string {
 	}
 
 	if fRes.DomainName != "" {
-		fmt.Println("Domain Name: " + fRes.DomainName)
 		if len(strings.Split(fRes.DomainName, ",")) > 1 {
 			summaryText += fmt.Sprintf("%s %s %s.\n", candidate, has, fmt.Sprintf(feedbackMapping["domain_exp"], fRes.DomainName, "s"))
 		} else {

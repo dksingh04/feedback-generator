@@ -112,6 +112,16 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 func addSkill(w http.ResponseWriter, r *http.Request) {
 	var techSkill = &f.TechSkill{Topics: []*f.Topic{&f.Topic{}}}
+	var t *f.Feedback
+
+	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
+		logrus.WithFields(logrus.Fields{
+			"status":  http.StatusInternalServerError,
+			"message": "Unable to decode request received in the request body",
+			"Error":   err,
+		}).Errorf("Unable to process the message error: %v", err)
+	}
+	fb = t
 	fb.TechSkills = append(fb.TechSkills, techSkill)
 	fmt.Println(len(fb.TechSkills))
 	tpl.ExecuteTemplate(w, "skill.html", fb)
@@ -119,18 +129,31 @@ func addSkill(w http.ResponseWriter, r *http.Request) {
 
 func addTopic(w http.ResponseWriter, r *http.Request) {
 	var topic = &f.Topic{}
-	index, err := strconv.Atoi(r.FormValue("index"))
+	var t *f.Feedback
+	//Always parse request body before retrieving any form or URL parameter value.
+	if err := json.NewDecoder(r.Body).Decode(&t); err != nil {
+		logrus.WithFields(logrus.Fields{
+			"status":  http.StatusInternalServerError,
+			"message": "Unable to decode request received in the request body",
+			"Error":   err,
+		}).Errorf("Unable to process the message error: %v", err)
+	}
+
+	r.ParseForm()
+	index, err := strconv.Atoi(r.Form.Get("index"))
 	fmt.Println(index)
 	if err != nil {
 		logrus.WithFields(logrus.Fields{
 			"status": 500,
 			"Error":  err,
-		}).Fatal("Parameters is missing!")
+		}).Error("Parameters is missing!")
 	}
-	fb.TechSkills[index].Topics = append(fb.TechSkills[index].Topics, topic)
-	t := &TopicData{SkillIndex: index, Topics: fb.TechSkills[index].Topics}
-	fmt.Println(len(fb.TechSkills[index].Topics))
-	tpl.ExecuteTemplate(w, "topic.html", t)
+
+	fb = t
+	fb.TechSkills[0].Topics = append(fb.TechSkills[0].Topics, topic)
+	tData := &TopicData{SkillIndex: 0, Topics: fb.TechSkills[0].Topics}
+	fmt.Println(len(fb.TechSkills[0].Topics))
+	tpl.ExecuteTemplate(w, "topic.html", tData)
 }
 
 func generateFeedbackResponseFromRequest(feedback *f.Feedback) (*f.GeneratedFeedbackResponse, error) {
