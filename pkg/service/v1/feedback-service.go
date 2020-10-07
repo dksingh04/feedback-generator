@@ -41,15 +41,15 @@ var feedbackMapping = map[string]string{
 	"Whiteboard_not_explained": "In white-boarding session, candidate was unable perform better, not able to solve the given problem at all",
 	"Coding_Standards":         "well-versed with coding standards and followed the same while writing the code",
 	"s-1":                      "Candidate needs substantial development and have to work a lot, missing fundamental concepts",
-	"e-1":                      "Candidate has no experience in this skill and was unable to demonstrate his experience",
-	"s-2":                      "Candidate needs some training to bring competency up to standards, have some basic understanding but missing some other fundamentals",
-	"e-2":                      "Candidate has limited experience, close supervision will be needed for him",
+	"e-1":                      "and was unable to demonstrate his experience",
+	"s-2":                      "Candidate needs some training to bring the competency up to standards, have some basic understanding but missing some other fundamentals",
+	"e-2":                      "close supervision will be needed for the candidate",
 	"s-3":                      "Candidate is competent and can perform his task, no additional training is required at this time",
-	"e-3":                      "Candidate is competent and can complete assignments with reasonable supervision",
+	"e-3":                      "can complete assignments with reasonable supervision",
 	"s-4":                      "Candidate is above average, and competent in this skill, no training required",
-	"e-4":                      "Candidate has considerable experience and can perform his tasks with very minimal supervision",
+	"e-4":                      "and can perform his tasks with very minimal supervision",
 	"s-5":                      "Candidate is expert in this skill and can teach and mentor others in the team",
-	"e-5":                      "Candidate has extensive experience and can work independently",
+	"e-5":                      "and can work independently",
 	"HaveTheoretical":          "theoretically clear and explained the concepts of '%v' very well",
 	"NoTheoretical":            "not clear with theoretical part of '%v', unable to explain '%v'",
 	"InDepthUnderstanding":     "in-depth understanding of the technology and was able to explain the concepts discussed (for e.g. %s)",
@@ -309,7 +309,7 @@ func generateSkillFeedback(fRes *v1.Feedback) []*v1.SkillFeedback {
 		} else {
 			sFeedback := &v1.SkillFeedback{
 				Skill:        tech.SkillName,
-				FeedbackText: fmt.Sprintf("%s. %s.\n", feedbackMapping["s-"+strconv.FormatInt(int64(tech.SkillRating), 10)], feedbackMapping["e-"+strconv.FormatInt(int64(tech.ExperienceRating), 10)]),
+				FeedbackText: fmt.Sprintf("%s, %s.\n", feedbackMapping["s-"+strconv.FormatInt(int64(tech.SkillRating), 10)], feedbackMapping["e-"+strconv.FormatInt(int64(tech.ExperienceRating), 10)]),
 			}
 			sFeedbackSlice = append(sFeedbackSlice, sFeedback)
 			sFeedback.FeedbackText += fmt.Sprintf("\n%s\n", fmt.Sprintf(topicsCovered, tech.SkillName))
